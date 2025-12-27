@@ -1,0 +1,19 @@
+/* CSS TEST FILE */
+body {
+    background-color: #ffcccc !important;
+    border: 5px solid red !important;
+}
+
+h1, h2, h3 {
+    color: red !important;
+}
+
+.test-css-loaded {
+    color: green !important;
+    font-size: 24px !important;
+    font-weight: bold !important;
+}
+
+.test-css-loaded::after {
+    content: " ✅ CSS LOADED!";
+}
