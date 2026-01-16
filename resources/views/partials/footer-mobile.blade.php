@@ -20,6 +20,42 @@
   </div>
 </footer>
 
+<style>
+#footer {
+    transition: transform 0.3s ease-in-out;
+    transform: translateY(0);
+    z-index: 1000;
+}
+.footer-hidden {
+    transform: translateY(100%) !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let lastScrollTop = 0;
+    const footer = document.getElementById('footer');
+    
+    if (footer) {
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Only toggle if we've scrolled more than a small threshold to avoid jitter
+            if (Math.abs(scrollTop - lastScrollTop) > 5) {
+                if (scrollTop > lastScrollTop && scrollTop > 60) {
+                    // Scrolling down & past header
+                    footer.classList.add('footer-hidden');
+                } else {
+                    // Scrolling up
+                    footer.classList.remove('footer-hidden');
+                }
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        }, { passive: true });
+    }
+});
+</script>
+
 
 <footer class="modern-footer">
 	<div class="footer-container">

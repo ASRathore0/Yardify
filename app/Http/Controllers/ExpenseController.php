@@ -189,11 +189,24 @@ class ExpenseController extends Controller
             return strtotime($b['created_at']) <=> strtotime($a['created_at']);
         });
 
-        // (Keep settlement item's amount as the stored snapshot total_amount so
-        // it reflects what was settled at the time; do not overwrite it with
-        // a post-settlement calculation.)
+        // Pagination
+        $perPage = request()->input('per_page', 20);
+        if (!in_array($perPage, [10, 20, 40, 50])) $perPage = 20;
 
-        $group['expenses'] = $items;
+        $page = request()->input('page', 1);
+        $offset = ($page - 1) * $perPage;
+        
+        $pagedItems = array_slice($items, $offset, $perPage);
+        
+        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
+            $pagedItems,
+            count($items),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        $group['expenses'] = $paginator;
 
         return view('expense.show', ['group' => $group]);
     }
@@ -203,6 +216,7 @@ class ExpenseController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:100',
+            'description' => 'nullable|string|max:500', 
             'members' => 'nullable|string', // comma separated emails/names
         ]);
 
@@ -226,23 +240,28 @@ class ExpenseController extends Controller
 
         $g = ExpenseGroup::create([
             'name' => $data['name'],
+            'description' => $data['description'] ?? null,
             'members' => $members,
             'currency' => 'USD',
             'created_by' => Auth::check() ? Auth::id() : null,
         ]);
 
-        return response()->json(['status' => 'success', 'group' => [
-            'id' => $g->id,
-            'name' => $g->name,
-            'members' => $this->normalizeMembers($g->members),
-            'expenses' => [],
-        ]]);
+        if ($request->wantsJson()) {
+            return response()->json(['status' => 'success', 'group' => [
+                'id' => $g->id,
+                'name' => $g->name,
+                'members' => $this->normalizeMembers($g->members),
+                'expenses' => [],
+            ]]);
+        }
+
+        return redirect()->back()->with('success', 'Group created successfully');
     }
 
     // Add an expense to a group and compute balances
     public function storeExpense(Request $request, $group)
     {
-        $data = $request->validate([
+        $rules = [
             'title' => 'required|string|max:200',
             'amount' => 'required|numeric|min:0',
             'paid_by' => 'required|string',
@@ -250,7 +269,11 @@ class ExpenseController extends Controller
             'split_method' => 'required|string|in:equal,exact,percent',
             'exact_shares' => 'nullable',
             'percent_shares' => 'nullable',
-        ]);
+            // If is_custom_split is set, we MUST have involve_members array with at least 1 item
+            'involved_members' => 'required_if:is_custom_split,1|array|min:1',
+        ];
+        
+        $data = $request->validate($rules);
 
         $g = ExpenseGroup::find($group);
         if (!$g) {
@@ -260,7 +283,20 @@ class ExpenseController extends Controller
         // Use normalized members (deduplicated, prefer registered names) so
         // shares are recorded against canonical display identifiers.
         $members = $this->normalizeMembers($g->members ?? []);
-        $n = count($members) ?: 1;
+
+        // Filter involved members
+        // If is_custom_split is present, use the array (validated above)
+        // If NOT present (e.g. API or old form), assume ALL members
+        $involved = $members;
+        if ($request->has('is_custom_split')) {
+             // We know involved_members is present and valid due to validation
+             $involved = array_values(array_intersect($members, $request->involved_members));
+        } elseif ($request->has('involved_members') && is_array($request->involved_members)) {
+             // Backward compatibility just in case
+             $involved = array_values(array_intersect($members, $request->involved_members));
+        }
+
+        $n = count($involved) ?: 1;
 
         $amount = (float)$data['amount'];
 
@@ -268,7 +304,9 @@ class ExpenseController extends Controller
         $shares = [];
         if ($data['split_method'] === 'equal') {
             $per = round($amount / $n, 2);
-            foreach ($members as $m) $shares[$m] = $per;
+            foreach ($members as $m) {
+                $shares[$m] = in_array($m, $involved) ? $per : 0;
+            }
         } elseif ($data['split_method'] === 'exact') {
             $exact = $data['exact_shares'] ?? '';
             $map = $this->parseKeyValueString($exact, $members);

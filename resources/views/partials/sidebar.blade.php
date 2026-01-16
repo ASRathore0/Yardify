@@ -202,9 +202,9 @@
 <body>
 
   <!-- Demo Button to Open Sidebar -->
-  <button class="open-btn" onclick="toggleSidebar()">
+  <!-- <button class="open-btn" onclick="toggleSidebar()">
     <i class="fa-solid fa-bars"></i> Menu
-  </button>
+  </button> -->
 
   <!-- 1. The Backdrop (Dark overlay) -->
   <div class="backdrop" id="backdrop" onclick="toggleSidebar()"></div>

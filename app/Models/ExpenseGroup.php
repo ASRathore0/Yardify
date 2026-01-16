@@ -8,7 +8,7 @@ class ExpenseGroup extends Model
 {
     protected $table = 'expense_groups';
 
-    protected $fillable = ['name', 'currency', 'members', 'created_by'];
+    protected $fillable = ['name', 'description', 'currency', 'members', 'created_by'];
 
     protected $casts = [
         'members' => 'array',
