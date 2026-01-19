@@ -28,7 +28,8 @@ class ExpenseController extends Controller
             if (!empty($user->email)) $identifiers[] = $user->email;
 
             // fetch groups where the user is creator or listed in members
-            $query = ExpenseGroup::with(['expenses.shares']);
+            // include trashed groups so members can see deleted groups
+            $query = ExpenseGroup::withTrashed()->with(['expenses.shares']);
             $query->where(function($q) use ($identifiers, $user){
                 $q->where('created_by', $user->id);
                 foreach ($identifiers as $id) {
@@ -36,13 +37,23 @@ class ExpenseController extends Controller
                 }
             });
 
-            $groups = $query->get()->map(function($g){
+            $all = $query->get();
+            // Owners who deleted their group should not see it in their own list.
+            $visible = $all->filter(function($g) use ($user) {
+                if ($g->deleted_at && $g->created_by == $user->id) return false;
+                return true;
+            });
+
+            $groups = $visible->map(function($g){
                 return [
                     'id' => $g->id,
                     'name' => $g->name,
+                    'created_by' => $g->created_by,
                     'currency' => $g->currency,
                     'members' => $this->normalizeMembers($g->members ?? []),
-                    'expenses' => $g->expenses->map(function($e){
+                    'deleted' => $g->deleted_at ? true : false,
+                    'deleted_at' => $g->deleted_at ? $g->deleted_at->toDateTimeString() : null,
+                    'expenses' => $g->deleted_at ? [] : $g->expenses->map(function($e){
                         $shares = [];
                         foreach ($e->shares as $s) {
                             $shares[$s->member] = (float)$s->amount;
@@ -424,7 +435,7 @@ class ExpenseController extends Controller
     // Leave a group: remove current user identifiers from the group's members
     public function leave(Request $request, $group)
     {
-        $g = ExpenseGroup::find($group);
+        $g = ExpenseGroup::withTrashed()->find($group);
         if (!$g) return response()->json(['status' => 'error', 'message' => 'Group not found'], 404);
 
         $user = Auth::user();
@@ -565,6 +576,36 @@ class ExpenseController extends Controller
         ]);
 
         return response()->json(['status' => 'success', 'redirect' => route('expense.groups.show', ['group' => $g->id])]);
+    }
+
+    // Delete a group (only owner can delete)
+    public function destroy(Request $request, $group)
+    {
+        $g = ExpenseGroup::with(['expenses.shares'])->find($group);
+        if (!$g) {
+            if ($request->wantsJson()) return response()->json(['status' => 'error','message' => 'Group not found'], 404);
+            abort(404);
+        }
+
+        $user = Auth::user();
+        if (!$user) {
+            if ($request->wantsJson()) return response()->json(['status' => 'error','message' => 'Not authenticated'], 403);
+            abort(403);
+        }
+
+        if (!$g->created_by || $g->created_by != $user->id) {
+            if ($request->wantsJson()) return response()->json(['status' => 'error','message' => 'Only the group owner can delete this group.'], 403);
+            abort(403, 'Only the group owner can delete this group.');
+        }
+
+        // Soft-delete the group so members see it as "no longer existing" but data is preserved.
+        $g->delete();
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['status' => 'success', 'redirect' => route('expense.index')]);
+        }
+
+        return redirect()->route('expense.index')->with('success', 'Group deleted successfully');
     }
 
     // Download a simple CSV report for the group

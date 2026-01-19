@@ -151,7 +151,7 @@
 </div>
 
         <!-- Expense Modal -->
-        <div id="expenseModal" class="fixed inset-0 z-50 hidden">
+         <div id="expenseModal" class="fixed inset-0 z-50 hidden">
             <div id="expenseModalOverlay" class="absolute inset-0 bg-black/50"></div>
             <div class="relative flex items-center justify-center min-h-full p-4 sm:p-6">
                     <div class="bg-white w-full max-w-xl rounded-3xl shadow-lg max-h-[95vh] overflow-visible">
@@ -295,10 +295,7 @@
                 </div>
             </div>
         </div>
-
-        @include('partials.footer-mobile')
-        <script src="js/script.js"></script>
-        <script src="js/script1.js"></script>
+ 
         <script>
             function toggleExpenseMember(btn, index) {
                 const input = document.getElementById('hidden-input-' + index);
@@ -573,3 +570,6 @@
                 });
             })();
         </script>
+        @include('partials.footer-modern')
+        <script src="js/script.js"></script>
+        <script src="js/script1.js"></script>

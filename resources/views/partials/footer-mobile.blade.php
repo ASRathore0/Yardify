@@ -1,33 +1,51 @@
 
-<footer id="footer">
-  <div class="footer-links">
-	<a href="/" class="footer-button" id="home-button">
-	  <i class="fa fa-house icon"></i>
-	  <span>Home</span>
-	</a>
-	<a href="{{ route('explore') }}" class="footer-button" id="explore-button">
-	  <i class="fa fa-compass icon"></i>
-	  <span>Explore</span>
-	</a>
-	<a href="assets/other.html" class="footer-button" id="cart-button">
-	  <i class="fa fa-handshake icon"></i>
-	  <span>1X1</span>
-	</a>
-	<a href="{{ Auth::check() ? route('profile') : route('login') }}" class="footer-button" id="profile-button">
-	  <i class="fa fa-user icon"></i>
-	  <span>Profile</span>
-	</a>
-  </div>
-</footer>
+
 
 <style>
+/* Compact fixed mobile footer */
 #footer {
-    transition: transform 0.3s ease-in-out;
-    transform: translateY(0);
-    z-index: 1000;
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: #ffffff;
+	border-top: 1px solid #e5e7eb;
+	transition: transform 0.18s ease-in-out;
+	transform: translateY(0);
+	z-index: 1000;
+	/* padding: 6px 8px; */
 }
 .footer-hidden {
-    transform: translateY(100%) !important;
+	transform: translateY(100%) !important;
+}
+.footer-links {
+	display: flex;
+	justify-content: space-between;
+	gap: 4px;
+	max-width: 720px;
+	margin: 0 auto;
+}
+.footer-button {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 6px 4px;
+	color: #6b7280;
+	text-decoration: none;
+	font-size: 12px;
+	flex: 1 1 0;
+	min-width: 0;
+}
+.footer-button .icon { font-size: 18px; margin-bottom: 2px; }
+.footer-button span { font-size: 11px; line-height: 1; }
+.footer-button.active {
+	color: #0f172a;
+}
+
+@media (max-width:420px) {
+	.footer-button .icon { font-size:25px }
+	.footer-button { padding: 5px 2px }
 }
 </style>
 

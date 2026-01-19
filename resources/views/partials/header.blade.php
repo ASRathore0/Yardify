@@ -7,5 +7,5 @@
 			window.location.href = 'image/BookingYard.apk';
 		}
 	</script>
-	<button class="toggle-button" onclick="toggleMenu()">☰</button>
+	<button class="toggle-button" onclick="window.bookingyardToggleSidebar()">☰</button>
 </header>

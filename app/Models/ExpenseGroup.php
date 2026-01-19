@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ExpenseGroup extends Model
 {
+    use SoftDeletes;
     protected $table = 'expense_groups';
 
     protected $fillable = ['name', 'description', 'currency', 'members', 'created_by'];

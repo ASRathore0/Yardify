@@ -5,6 +5,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\VendorController;
+use App\Http\Controllers\CareerController;
 
 Route::get('/', function () { return view('dashboard'); })->name('home');
 
@@ -113,6 +114,9 @@ Route::middleware('auth')->group(function(){
 // Public explore / landing page for features like Rent Houses and Expense Management
 Route::view('/explore', 'explore')->name('explore');
 
+// Simple page for the 1X1 quick-links (opened from mobile footer)
+Route::view('/one-x-one', 'partials.one-x-one')->name('one_x_one');
+
 // Expense Management (DB-backed)
 use App\Http\Controllers\ExpenseController;
 Route::middleware('auth')->group(function(){
@@ -126,8 +130,14 @@ Route::middleware('auth')->group(function(){
     Route::get('/expense-management/groups/{group}/report', [ExpenseController::class, 'report'])->name('expense.groups.report');
     Route::get('/expense-management/groups/create', [ExpenseController::class, 'create'])->name('expense.groups.create');
     Route::get('/expense-management/groups/{group}', [ExpenseController::class, 'show'])->name('expense.groups.show');
+    Route::delete('/expense-management/groups/{group}', [ExpenseController::class, 'destroy'])->name('expense.groups.destroy');
 });
 
 // Public invite accept link (invitees can open this; they'll be prompted to login if needed)
 Route::get('/expense-management/invite/accept/{token}', [ExpenseController::class, 'acceptInvite'])->name('expense.invite.accept');
+
+
+// Careers application
+Route::get('/careers', [CareerController::class, 'show'])->name('careers.show');
+Route::post('/careers', [CareerController::class, 'submit'])->name('careers.submit');
 

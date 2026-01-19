@@ -60,7 +60,7 @@
     <div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <h2 style="margin:0;">Your Businesses</h2>
-        <a href="{{ route('vendor.form') }}" class="btn btn-add" style="text-decoration:none;">Add Business</a>
+        <!-- <a href="{{ route('vendor.form') }}" class="btn btn-add" style="text-decoration:none;">Add Business</a> -->
       </div>
 
       @if(isset($vendors) && $vendors->count())

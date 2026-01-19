@@ -210,6 +210,7 @@
     </main>
 
   @include('partials.footer-mobile')
+    @include('partials.footer-modern')
 
   <script src="js/script.js"></script>
   <script src="js/script1.js"></script>

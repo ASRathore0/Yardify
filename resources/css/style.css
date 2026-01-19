@@ -1,6 +1,6 @@
 /* Reset */
 * {
-  margin: 0;
+  margin: 0; 
   padding: 0;
   box-sizing: border-box;
   font-family:sans-serif;
@@ -137,7 +137,7 @@ main {
 .footer-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 30px;
+   
 }
 
 .footer-column h4 {
@@ -643,141 +643,7 @@ nav ul li a {
   border: 1px solid #ddd;
   border-radius: 5px;
 }
-
-/* Profile */
-.profile-icon {
-  position: absolute;
-  top: 5px;
-  right: 70px;
-}
-
-.profile-icon a {
-  font-size: 35px;
-  color: #ebf1f5;
-  text-decoration: none;
-}
-
-/* Media Queries for Responsiveness */
-@media (max-width: 768px) {
-  .profile-icon {
-      right: 20px; /* Move closer on smaller screens */
-  }
-
-  .profile-icon a {
-      font-size: 35px; /* Slightly smaller icon size for mobile */
-  }
-}
-
-@media (max-width: 480px) {
-  .profile-icon {
-      top: 10px; /* Adjust top position for very small screens */
-      right: 15px; /* Further reduce right margin */
-  }
-
-  .profile-icon a {
-      font-size: 35px; /* Smaller size for very small screens */
-  }
-}
-
-.profile-icon a:hover {
-  color: #7ab9e9;
-}
-
-.profile-section {
-  padding: 40px;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  max-width: 600px;
-  margin: 50px auto;
-  display: none;
-}
-
-.profile-section h2 {
-  margin-bottom: 20px;
-  color: #2ecc71;
-}
-
-.profile-section form {
-  display: flex;
-  flex-direction: column;
-}
-
-.profile-section form div {
-  margin-bottom: 15px;
-}
-
-.profile-section form label {
-  font-weight: bold;
-  margin-bottom: 5px;
-  display: block;
-}
-
-.profile-section form input {
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  width: 100%;
-}
-
-#saveProfileBtn {
-  padding: 10px;
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 18px;
-  transition: background-color 0.3s;
-}
-
-#saveProfileBtn:hover {
-  background-color: #2980b9;
-}
-
-/* Responsive adjustments for smaller screens */
-@media (max-width: 768px) {
-  .item {
-      width: calc(50% - 40px); /* Two items per row */
-  }
-
-  .vendor-item {
-      padding: 15px;
-  }
-
-  .modal-content {
-      width: 90%; /* More responsive modal width */
-  }
-
-  #manualLocation {
-      width: 100%; /* Full width input on smaller screens */
-      margin: 10px 0; /* Add margin for better spacing */
-  }
-
-  .location-button {
-      width: 100%; /* Full width button */
-      font-size: 16px; /* Adjust font size */
-  }
-}
-
-@media (max-width: 480px) {
-  .item {
-      /* width: 100%; Stack items on very small screens */
-      width: calc(50% - 40px); /* Two items per row */
-  }
-
-  .profile-section {
-      padding: 30px; /* Reduce padding for smaller screens */
-       
-  }
-
-  .profile-icon {
-      padding-left: 30px;
-  }
-}
-
-
+ 
 /* Wrapper Styles */
 .smart-input-wrapper {
   display: flex;
@@ -1234,30 +1100,7 @@ header {
   border-bottom: 2px solid #046c9f;
 }
 
-/* Profile Toggle Styling */
-.user-icon {
-  display: flex;
-  justify-content: space-around;
-  margin: 20px 0;
-}
-
-.profile-toggle button {
-  width: 100px;
-  padding: 8px;
-  border: 1px solid #ddd;
-  background: #f1f1f1;
-  border-radius: 20px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.3s;
-  margin-top: 5px;
-}
-
-.profile-toggle .active {
-  background: #046c9f;
-  color: #fff;
-}
-
+ 
 /* Form Styling */
 .auth-form {
   display: flex;
@@ -2620,4 +2463,3 @@ color: #046c9f;
   color: #046c9f;
   margin-right: 8px;
 }
-
