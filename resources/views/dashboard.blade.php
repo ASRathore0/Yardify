@@ -46,12 +46,18 @@
 <script>
   // Show the pop-up message after 5 seconds
   setTimeout(() => {
-    document.getElementById('popupMessage').classList.remove('hidden');
+    const popupMessage = document.getElementById('popupMessage');
+    if (popupMessage) {
+        popupMessage.classList.remove('hidden');
+    }
   }, 5000);
 
   // Function to close the pop-up
   function closePopup() {
-    document.getElementById('popupMessage').classList.add('hidden');
+    const popupMessage = document.getElementById('popupMessage');
+    if (popupMessage) {
+        popupMessage.classList.add('hidden');
+    }
   }
 </script>
  

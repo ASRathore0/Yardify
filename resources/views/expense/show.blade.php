@@ -17,12 +17,12 @@
         </div>
             <div class="flex items-center gap-3">
             <button id="openExpenseModalTop" type="button" class="inline-flex items-center px-4 py-2.5 bg-[#046c9f] text-white rounded-xl font-bold shadow-sm hover:bg-[#035680] transition">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <svg width="16" height="16" class="w-4 h-4" style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 <span class="ml-2">Add Transaction</span>
             </button>
             <a href="{{ route('expense.index') }}" 
                class="inline-flex items-center px-5 py-2.5 bg-white border border-slate-200 rounded-xl font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <svg width="16" height="16" class="w-4 h-4 mr-2" style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 Back To Dashboard
             </a>
         </div>
@@ -34,7 +34,7 @@
 
              <div class="bg-[#046c9f] p-6 rounded-3xl text-white shadow-lg shadow-indigo-100">
                 <h4 class="font-bold mb-2 flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <svg width="20" height="20" class="w-5 h-5 mr-2" style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     Settlement Tip
                 </h4>
                 <p class="text-indigo-100 text-xs leading-relaxed">
@@ -95,7 +95,7 @@
                                     <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>Show 50</option>
                                 </select>
                                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-500">
-                                    <svg class="w-3 h-3 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+                                    <svg width="12" height="12" class="w-3 h-3 fill-current" style="width: 0.75rem; height: 0.75rem;" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
                                 </div>
                             </div>
                         </form>
@@ -115,9 +115,9 @@
                             <div class="flex items-center gap-4">
                                 <div class="w-10 h-10 rounded-full {{ $e['category'] === 'Settled' ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-500' }} flex items-center justify-center">
                                     @if($e['category'] === 'Settled')
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        <svg width="20" height="20" class="w-5 h-5" style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     @else
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        <svg width="20" height="20" class="w-5 h-5" style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     @endif
                                 </div>
                                 <div>
@@ -371,18 +371,22 @@
                         const js = await res.json();
                         if(js.status === 'success'){
                             const link = js.invitation.link;
+                            const shareData = {
+                                title: 'Join BookingYard Group',
+                                text: 'Join the expense group "{{ addslashes($group["name"]) }}" on BookingYard',
+                                url: link
+                            };
+
                             // Try Web Share API
                             if (navigator.share) {
                                 try {
-                                    await navigator.share({
-                                        title: 'Join my group on BookingYard',
-                                        text: 'Join the expense group "{{ addslashes($group['name']) }}"',
-                                        url: link
-                                    });
-                                    inviteMsg.textContent = 'Share dialog opened';
+                                    await navigator.share(shareData);
+                                    inviteMsg.textContent = ''; // Clear "Generating..." text on success
                                 } catch (shareErr) {
-                                    // share canceled or failed, fall back to showing link
-                                    inviteMsg.innerHTML = renderLinkFallback(link);
+                                    // If user cancelled (AbortError), do nothing. Otherwise show link.
+                                    if (shareErr.name !== 'AbortError') {
+                                        inviteMsg.innerHTML = renderLinkFallback(link);
+                                    }
                                 }
                             } else {
                                 inviteMsg.innerHTML = renderLinkFallback(link);
@@ -571,5 +575,5 @@
             })();
         </script>
         @include('partials.footer-modern')
-        <script src="js/script.js"></script>
-        <script src="js/script1.js"></script>
+        <script src="{{ asset('js/script.js') }}"></script>
+        <script src="{{ asset('js/script1.js') }}"></script>

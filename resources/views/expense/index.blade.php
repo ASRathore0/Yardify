@@ -62,7 +62,7 @@
             <div class="w-full flex justify-center">
                 <button onclick="document.getElementById('createGroupModal').classList.remove('hidden')" 
                    class="inline-flex items-center px-6 py-3 bg-white text-[#046c9f] rounded-2xl font-bold shadow-xl hover:bg-blue-50 transition-all transform hover:scale-105">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <svg class="w-5 h-5 mr-2" style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     New Group
                 </button>
             </div>
@@ -79,7 +79,7 @@
         
         <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center space-x-4">
             <div class="bg-blue-50 p-4 rounded-2xl text-[#046c9f]">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                <svg class="w-8 h-8" style="width: 2rem; height: 2rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
             </div>
             <div>
                 <p class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Active Groups</p>
@@ -130,7 +130,7 @@
                     <div class="ml-4 overflow-hidden">
                         <h4 class="text-xl font-bold text-slate-800 truncate">{{ $g['name'] }}</h4>
                         <div class="flex items-center text-slate-400 text-xs mt-1">
-                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a7 7 0 00-7 7v1h11v-1a7 7 0 00-7-7z"/></svg>
+                            <svg class="w-3 h-3 mr-1" style="width: 0.75rem; height: 0.75rem;" fill="currentColor" viewBox="0 0 20 20"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a7 7 0 00-7 7v1h11v-1a7 7 0 00-7-7z"/></svg>
                             {{ count($g['members']) }} members
                         </div>
                     </div>
@@ -159,7 +159,7 @@
                         @if(empty($g['deleted']))
                             <div class="relative">
                                 <button type="button" onclick="event.stopPropagation(); toggleGroupMenu({{ $g['id'] }})" class="p-2 hover:bg-slate-100 rounded-xl transition-colors">
-                                    <svg class="w-5 h-5 text-slate-400" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zm6 0a2 2 0 11-4 0 2 2 0 014 0zm6 0a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                    <svg class="w-5 h-5 text-slate-400" style="width: 1.25rem; height: 1.25rem;" fill="currentColor" viewBox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zm6 0a2 2 0 11-4 0 2 2 0 014 0zm6 0a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                                 </button>
                                 <div id="groupMenu-{{ $g['id'] }}" class="group-menu hidden absolute right-0 bottom-full mb-2 w-48 bg-white border border-slate-100 rounded-2xl shadow-2xl z-50 overflow-hidden">
                                     <a href="{{ url('/expense-management/groups/'.$g['id'].'/report') }}" onclick="event.stopPropagation()" class="block px-4 py-3 text-sm text-gray-700 hover:bg-slate-50 border-b border-slate-50">View Analytics</a>
@@ -188,7 +188,7 @@
         @empty
             <div class="col-span-full py-24 bg-white border-2 border-dashed border-slate-200 rounded-[2.5rem] flex flex-col items-center justify-center text-center">
                 <div class="bg-slate-50 p-6 rounded-full mb-4">
-                    <svg class="w-12 h-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <svg class="w-12 h-12 text-slate-300" style="width: 3rem; height: 3rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
                 <h3 class="text-xl font-bold text-slate-800">No Groups Found</h3>
                 <p class="text-slate-500 max-w-xs mt-2">Get started by creating your first expense group to track costs with roommates.</p>
@@ -208,7 +208,7 @@
                     <p class="text-sm text-slate-500">Organize your shared expenses</p>
                 </div>
                 <button onclick="document.getElementById('createGroupModal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 bg-slate-100 p-2 rounded-full">
-                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    <svg class="h-5 w-5" style="width: 1.25rem; height: 1.25rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
             </div>
             

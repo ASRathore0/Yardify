@@ -65,7 +65,7 @@
   <!-- Home services (Electrician) Card 2 -->
   <div class="service-card hidden " id="Electrician" data-card-id="Electrician2" onclick="showButtons(this)">
     <div class="service-image">
-      <img src="https://nerdsmagazine.com/wp-content/uploads/2020/03/Electrical_Engineer_2_1920X10180.jpg" alt="The Downtown Cafe">
+      <img src="https://placehold.co/600x400?text=Electrician" alt="The Downtown Cafe">
       <span class="offer-tag">Flat 25% OFF</span>
     </div>
     <div class="service-details">
@@ -1556,7 +1556,7 @@
 <!-- Event (Catering) Card 4 -->
 <div class="service-card hidden" id="Catering" data-card-id="Catering54" onclick="showButtons(this)">
     <div class="service-image">
-        <img src="https://tse4.mm.bing.net/th?id=OIP.7LvJ-MIqVKwSeR09L51j-QHaE7&pid=Api&P=0&h=180.jpg" alt="Afraa">
+        <img src="https://placehold.co/600x400?text=Catering" alt="Afraa">
         <span class="offer-tag">Flat 20% OFF</span>
     </div>
     <div class="service-details">
@@ -1853,7 +1853,7 @@
 <!-- Event (Chef) Card 4 -->
 <div class="service-card hidden" id="Chef" data-card-id="Chef54" onclick="showButtons(this)">
     <div class="service-image">
-        <img src="https://iamachef.in/wp-content/uploads/2020/12/chef-home.jpg" alt="Afraa">
+        <img src="https://placehold.co/600x400?text=Chef" alt="Afraa">
         <span class="offer-tag">Flat 20% OFF</span>
     </div>
     <div class="service-details">
@@ -2110,7 +2110,7 @@
   <div class="service-card hidden" id="Plumber" data-card-id="Plumber501" onclick="showButtons(this)">
     <div class="service-image">
       <img
-        src="https://proplumbersandiego.com/wp-content/uploads/2022/10/dwsd.jpg"
+        src="https://placehold.co/600x400?text=Plumber"
         alt="The Downtown Cafe">
       <span class="offer-tag">Flat 15% OFF</span>
     </div>
