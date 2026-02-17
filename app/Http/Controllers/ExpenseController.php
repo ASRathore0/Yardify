@@ -138,7 +138,14 @@ class ExpenseController extends Controller
             'id' => $g->id,
             'name' => $g->name,
             'currency' => $g->currency,
-            'members' => $this->normalizeMembers($g->members ?? []),
+            'members' => collect($this->normalizeMembers($g->members ?? []))->map(function($m){
+                $user = User::where('name', $m)->orWhere('email', $m)->first();
+                return [
+                    'name' => $user ? $user->name : $m,
+                    'avatar' => $user ? $user->avatar_path : null,
+                    'initial' => substr($user ? $user->name : $m, 0, 1),
+                ];
+            })->toArray(),
             'expenses' => [],
         ];
 
@@ -162,8 +169,8 @@ class ExpenseController extends Controller
         }
 
         // compute balances using only expenses that occurred after the latest settlement
-        $members = $group['members'];
-        $balances = array_fill_keys($members, 0.0);
+        $memberNames = array_column($group['members'], 'name');
+        $balances = array_fill_keys($memberNames, 0.0);
         $lastSettlement = Settlement::where('group_id', $g->id)->orderBy('created_at', 'desc')->first();
         foreach ($g->expenses as $e) {
             // if there's a last settlement, only include expenses after it
@@ -171,21 +178,21 @@ class ExpenseController extends Controller
             foreach ($e->shares as $s) {
                 $m = $s->member;
                 $amt = (float)$s->amount;
-                $mapped = $this->mapShareKey($m, $members);
+                $mapped = $this->mapShareKey($m, $memberNames);
                 if (!isset($balances[$mapped])) $balances[$mapped] = 0.0;
                 $balances[$mapped] -= $amt;
             }
-            $payer = $this->mapShareKey($e->payer_name ?? $e->payer_id, $members);
+            $payer = $this->mapShareKey($e->payer_name ?? $e->payer_id, $memberNames);
             if (!isset($balances[$payer])) $balances[$payer] = 0.0;
             $balances[$payer] += (float)$e->amount;
         }
         $group['balances'] = $balances;
 
         // compute total amount paid (spent) by each member, only post-last-settlement
-        $totals = array_fill_keys($members, 0.0);
+        $totals = array_fill_keys($memberNames, 0.0);
         foreach ($g->expenses as $e) {
             if ($lastSettlement && $e->created_at <= $lastSettlement->created_at) continue;
-            $payer = $this->mapShareKey($e->payer_name ?? $e->payer_id, $members);
+            $payer = $this->mapShareKey($e->payer_name ?? $e->payer_id, $memberNames);
             if (!isset($totals[$payer])) $totals[$payer] = 0.0;
             $totals[$payer] += (float)$e->amount;
         }

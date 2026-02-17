@@ -11,9 +11,20 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
             <h1 class="text-3xl font-black text-slate-900">{{ $group['name'] }}</h1>
-            <p class="text-slate-500 text-sm mt-1">
-                Roommates: <span class="font-medium text-slate-700">{{ implode(', ', $group['members']) }}</span>
-            </p>
+            <div class="flex items-center gap-2 mt-2">
+                <div class="flex -space-x-2">
+                    @foreach($group['members'] as $m)
+                        @if(!empty($m['avatar']))
+                             <img src="{{ asset('storage/' . $m['avatar']) }}" alt="{{ $m['name'] }}" class="w-8 h-8 rounded-full border-2 border-white object-cover" title="{{ $m['name'] }}">
+                        @else
+                             <div class="w-8 h-8 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600" title="{{ $m['name'] }}">
+                                {{ $m['initial'] }}
+                             </div>
+                        @endif
+                    @endforeach
+                </div>
+                <span class="text-slate-500 text-sm font-medium ml-2">{{ count($group['members']) }} members</span>
+            </div>
         </div>
             <div class="flex items-center gap-3">
             <button id="openExpenseModalTop" type="button" class="inline-flex items-center px-4 py-2.5 bg-[#046c9f] text-white rounded-xl font-bold shadow-sm hover:bg-[#035680] transition">
@@ -49,10 +60,22 @@
                 </div>
                 <div class="space-y-3">
                     @foreach($group['balances'] as $name => $bal)
+                        @php
+                            $m = collect($group['members'])->firstWhere('name', $name) ?? ['name' => $name, 'initial' => substr($name, 0, 1), 'avatar' => null];
+                        @endphp
                         <div class="flex items-center justify-between p-4 rounded-2xl border {{ $bal >= 0 ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100' }}">
-                            <div>
-                                <span class="font-bold text-slate-700">{{ $name }}</span>
-                                <div class="text-[12px] text-slate-500 mt-1">Spent: <span class="font-semibold text-slate-700">₹{{ number_format($group['totals_paid'][$name] ?? 0, 2) }}</span></div>
+                            <div class="flex items-center gap-3">
+                                @if(!empty($m['avatar']))
+                                     <img src="{{ asset('storage/' . $m['avatar']) }}" alt="{{ $m['name'] }}" class="w-10 h-10 rounded-full bg-white border border-slate-100 object-cover shadow-sm">
+                                @else
+                                     <div class="w-10 h-10 rounded-full bg-white border border-slate-100 text-slate-500 flex items-center justify-center font-bold text-sm shadow-sm">
+                                        {{ $m['initial'] }}
+                                     </div>
+                                @endif
+                                <div>
+                                    <span class="font-bold text-slate-800 block leading-tight">{{ $name }}</span>
+                                    <span class="text-[11px] text-slate-500 font-medium">Spent: ₹{{ number_format($group['totals_paid'][$name] ?? 0, 0) }}</span>
+                                </div>
                             </div>
                             <div class="text-right">
                                 <span class="block text-[10px] uppercase font-bold opacity-60">
@@ -182,7 +205,7 @@
                                     @php $me = auth()->user() ? (auth()->user()->name ?: auth()->user()->email) : null; @endphp
                                     <select name="paid_by" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white outline-none">
                                         @foreach($group['members'] as $m)
-                                            <option value="{{ $m }}" @if($me && $me == $m) selected @endif>{{ $m }}</option>
+                                            <option value="{{ $m['name'] }}" @if($me && $me == $m['name']) selected @endif>{{ $m['name'] }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -212,11 +235,14 @@
                                     @foreach($group['members'] as $index => $m)
                                         <button type="button" 
                                             onclick="toggleExpenseMember(this, '{{ $index }}')"
-                                            class="px-3 py-1.5 rounded-full text-xs font-bold border transition-all select-none bg-[#e0f2fe] text-[#046c9f] border-[#046c9f] flex items-center gap-1 hover:brightness-95">
-                                            <span>{{ $m }}</span>
+                                            class="px-3 py-1.5 rounded-full text-xs font-bold border transition-all select-none bg-[#e0f2fe] text-[#046c9f] border-[#046c9f] flex items-center gap-2 hover:brightness-95">
+                                            @if(!empty($m['avatar']))
+                                                <img src="{{ asset('storage/' . $m['avatar']) }}" class="w-4 h-4 rounded-full object-cover">
+                                            @endif
+                                            <span>{{ $m['name'] }}</span>
                                             <span class="text-[10px] opacity-60">✕</span>
                                         </button>
-                                        <input type="hidden" name="involved_members[]" value="{{ $m }}" id="hidden-input-{{ $index }}">
+                                        <input type="hidden" name="involved_members[]" value="{{ $m['name'] }}" id="hidden-input-{{ $index }}">
                                     @endforeach
                                 </div>
                                 <p class="text-[10px] text-slate-400 mt-2">* Deselected members won't pay for this.</p>
@@ -628,6 +654,7 @@
                 const dateEl = document.getElementById('edDate');
                 const paidByEl = document.getElementById('edPaidBy');
                 const amountEl = document.getElementById('edAmount');
+                const groupMembers = @json($group['members']);
 
                 function closeModal(){
                     if(modal) {
@@ -662,14 +689,17 @@
                                     hasItems = true;
                                     const shareAmt = parseFloat(amount).toFixed(2);
                                     
+                                    // Find member details
+                                    const m = groupMembers.find(gm => gm.name === name);
+                                    const avatar = m && m.avatar ? `<img src="/storage/${m.avatar}" class="w-8 h-8 rounded-full object-cover border border-slate-100">` : 
+                                        `<div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500">${name.charAt(0).toUpperCase()}</div>`;
+
                                     const row = document.createElement('div');
                                     row.className = 'flex items-center justify-between p-3 rounded-xl bg-white border border-slate-100';
                                     
                                     row.innerHTML = `
                                         <div class="flex items-center gap-3">
-                                            <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500">
-                                                ${name.charAt(0).toUpperCase()}
-                                            </div>
+                                            ${avatar}
                                             <span class="font-bold text-slate-700 text-sm">${name}</span>
                                         </div>
                                         <div class="text-right">
