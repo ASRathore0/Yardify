@@ -124,9 +124,13 @@
                 @endif
 
                 <div class="flex items-center mb-6">
-                    <div class="h-14 w-14 bg-gradient-to-br from-[#046c9f] to-blue-400 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-lg shadow-blue-100">
-                        {{ substr($g['name'], 0, 1) }}
-                    </div>
+                    @if(!empty($g['image']))
+                        <img src="{{ asset($g['image']) }}" alt="{{ $g['name'] }}" class="h-14 w-14 rounded-2xl object-cover shadow-lg shadow-blue-100">
+                    @else
+                        <div class="h-14 w-14 bg-gradient-to-br from-[#046c9f] to-blue-400 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-lg shadow-blue-100">
+                            {{ substr($g['name'], 0, 1) }}
+                        </div>
+                    @endif
                     <div class="ml-4 overflow-hidden">
                         <h4 class="text-xl font-bold text-slate-800 truncate">{{ $g['name'] }}</h4>
                         <div class="flex items-center text-slate-400 text-xs mt-1">
@@ -144,9 +148,13 @@
                 <div class="mt-auto flex items-center justify-between">
                     <div class="flex -space-x-2">
                         @foreach(array_slice($g['members'], 0, 3) as $member)
-                             <div class="w-8 h-8 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600" title="{{ $member['name'] ?? 'User' }}">
-                                {{ substr($member['name'] ?? 'U', 0, 1) }}
-                             </div>
+                            @if(!empty($member['avatar']))
+                                <img src="{{ asset('storage/' . $member['avatar']) }}" alt="{{ $member['name'] }}" class="w-8 h-8 rounded-full border-2 border-white object-cover" title="{{ $member['name'] }}">
+                            @else
+                                <div class="w-8 h-8 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600" title="{{ $member['name'] }}">
+                                    {{ $member['initial'] }}
+                                </div>
+                            @endif
                         @endforeach
                         @if(count($g['members']) > 3)
                             <div class="w-8 h-8 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-400">
@@ -164,6 +172,7 @@
                                 <div id="groupMenu-{{ $g['id'] }}" class="group-menu hidden absolute right-0 bottom-full mb-2 w-48 bg-white border border-slate-100 rounded-2xl shadow-2xl z-50 overflow-hidden">
                                     <a href="{{ url('/expense-management/groups/'.$g['id'].'/report') }}" onclick="event.stopPropagation()" class="block px-4 py-3 text-sm text-gray-700 hover:bg-slate-50 border-b border-slate-50">View Analytics</a>
                                     @if($isOwner)
+                                        <button type="button" onclick="event.stopPropagation(); toggleGroupMenu({{ $g['id'] }}); openImageModal({{ $g['id'] }})" class="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-slate-50 border-b border-slate-50">Set Group Image</button>
                                         <button type="button" onclick="event.stopPropagation(); toggleGroupMenu({{ $g['id'] }}); confirmDeleteOwner({{ $g['id'] }}, {{ $isMember ? 'true' : 'false' }})" class="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50">Delete Group</button>
                                         <form id="deleteForm-{{ $g['id'] }}" action="{{ url('/expense-management/groups/'.$g['id']) }}" method="POST" style="display:none">@csrf @method('DELETE')</form>
                                     @else
@@ -227,6 +236,36 @@
         <div class="bg-slate-50 px-8 py-6 flex gap-3">
             <button type="submit" form="createGroupForm" class="flex-1 bg-[#046c9f] text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-100 hover:bg-[#035680] transition-all">Create Group</button>
             <button type="button" onclick="document.getElementById('createGroupModal').classList.add('hidden')" class="px-6 bg-white text-slate-600 font-bold rounded-2xl border border-slate-200 hover:bg-slate-100 transition-all">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Set Group Image -->
+<div id="setGroupImageModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeImageModal()"></div>
+    <div class="relative bg-white rounded-[2rem] shadow-2xl w-full max-w-lg overflow-hidden transform transition-all animate-in fade-in zoom-in duration-200">
+        <div class="px-8 pt-8 pb-6">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h3 class="text-2xl font-black text-slate-900">Group Icon</h3>
+                    <p class="text-sm text-slate-500">Update the visual identity</p>
+                </div>
+                <button onclick="closeImageModal()" class="text-slate-400 hover:text-slate-600 bg-slate-100 p-2 rounded-full">
+                    <svg class="h-5 w-5" style="width: 1.25rem; height: 1.25rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            
+            <form id="groupImageForm" method="POST" enctype="multipart/form-data" class="space-y-6">
+                @csrf
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Upload Image</label>
+                    <input type="file" name="image" required accept="image/*" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#046c9f] file:text-white hover:file:bg-[#035680]"/>
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" class="flex-1 bg-[#046c9f] text-white py-3 rounded-2xl font-bold shadow-lg shadow-blue-100 hover:bg-[#035680] transition-all">Upload</button>
+                    <button type="button" onclick="closeImageModal()" class="px-6 bg-white text-slate-600 font-bold rounded-2xl border border-slate-200 hover:bg-slate-100 transition-all">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -324,6 +363,17 @@
         const isHidden = el.classList.contains('hidden');
         closeAllGroupMenus();
         if (isHidden) el.classList.remove('hidden');
+    }
+
+    function openImageModal(groupId){
+        const modal = document.getElementById('setGroupImageModal');
+        const form = document.getElementById('groupImageForm');
+        form.action = "{{ url('/expense-management/groups') }}/" + groupId + "/image";
+        modal.classList.remove('hidden');
+    }
+
+    function closeImageModal(){
+        document.getElementById('setGroupImageModal').classList.add('hidden');
     }
 
     function closeAllGroupMenus(){

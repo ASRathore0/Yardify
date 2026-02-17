@@ -130,6 +130,7 @@ Route::middleware('auth')->group(function(){
     Route::get('/expense-management/groups/{group}/report', [ExpenseController::class, 'report'])->name('expense.groups.report');
     Route::get('/expense-management/groups/create', [ExpenseController::class, 'create'])->name('expense.groups.create');
     Route::get('/expense-management/groups/{group}', [ExpenseController::class, 'show'])->name('expense.groups.show');
+    Route::post('/expense-management/groups/{group}/image', [ExpenseController::class, 'updateImage'])->name('expense.groups.image');
     Route::delete('/expense-management/groups/{group}', [ExpenseController::class, 'destroy'])->name('expense.groups.destroy');
 });
 

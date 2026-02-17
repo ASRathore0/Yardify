@@ -106,10 +106,13 @@
                 
                 <div class="divide-y divide-slate-50">
                     @forelse($group['expenses'] as $e)
-                        <div class="px-8 py-5 flex items-center justify-between hover:bg-slate-50 transition {{ $e['category'] === 'Settled' ? 'cursor-pointer settlement-item' : '' }}"
-                             @if($e['category'] === 'Settled')
-                                 data-shares="{{ json_encode($e['shares']) }}"
-                                 data-date="{{ \Carbon\Carbon::parse($e['created_at'])->format('M d, Y, h:i A') }}"
+                        <div class="px-8 py-5 flex items-center justify-between hover:bg-slate-50 transition cursor-pointer {{ $e['category'] === 'Settled' ? 'settlement-item' : 'expense-item' }}"
+                             data-shares="{{ json_encode($e['shares']) }}"
+                             data-date="{{ \Carbon\Carbon::parse($e['created_at'])->format('M d, Y, h:i A') }}"
+                             @if($e['category'] !== 'Settled')
+                                 data-title="{{ $e['title'] }}"
+                                 data-amount="{{ $e['amount'] }}"
+                                 data-paid-by="{{ $e['paid_by'] }}"
                              @endif
                         >
                             <div class="flex items-center gap-4">
@@ -290,6 +293,44 @@
 
                         <div class="mt-6 text-center">
                             <button id="closeSDBtn" class="px-6 py-2 bg-slate-100 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-200">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expense Details Modal -->
+        <div id="expenseDetailsModal" class="fixed inset-0 z-50 hidden">
+            <div id="edOverlay" class="absolute inset-0 bg-black/50"></div>
+            <div class="relative flex items-center justify-center min-h-full p-4 sm:p-6">
+                <div class="bg-white w-full max-w-sm rounded-3xl shadow-lg overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h3 class="text-lg font-bold truncate max-w-[200px]" id="edTitle">Expense Details</h3>
+                                <p id="edDate" class="text-xs text-slate-400 mt-1"></p>
+                            </div>
+                            <button id="closeED" class="text-slate-400 hover:text-slate-600">✕</button>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-xl mb-4">
+                             <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm font-semibold text-slate-500">Paid By</span>
+                                <span class="text-sm font-bold text-slate-800" id="edPaidBy"></span>
+                             </div>
+                             <div class="flex justify-between items-center">
+                                <span class="text-sm font-semibold text-slate-500">Total Amount</span>
+                                <span class="text-xl font-black text-slate-900" id="edAmount"></span>
+                             </div>
+                        </div>
+                        
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Split Details</h4>
+                        <div class="space-y-2 max-h-[300px] overflow-y-auto" id="edList">
+                            <!-- Populated via JS -->
+                        </div>
+
+                        <div class="mt-6 text-center">
+                            <button id="closeEDBtn" class="px-6 py-2 bg-slate-100 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-200">Close</button>
                         </div>
                     </div>
                 </div>
@@ -569,6 +610,82 @@
                                 document.body.style.overflow = 'hidden';
 
                             } catch(err){ console.error('Error parsing settlement data', err); }
+                        }
+                    }
+                });
+            })();
+        </script>
+
+        <script>
+            // Expense Details Handler
+            (function(){
+                const modal = document.getElementById('expenseDetailsModal');
+                const overlay = document.getElementById('edOverlay');
+                const closeIcon = document.getElementById('closeED');
+                const closeBtn = document.getElementById('closeEDBtn');
+                const list = document.getElementById('edList');
+                const titleEl = document.getElementById('edTitle');
+                const dateEl = document.getElementById('edDate');
+                const paidByEl = document.getElementById('edPaidBy');
+                const amountEl = document.getElementById('edAmount');
+
+                function closeModal(){
+                    if(modal) {
+                        modal.classList.add('hidden');
+                        document.body.style.overflow = 'auto';
+                    }
+                }
+
+                if(overlay) overlay.addEventListener('click', closeModal);
+                if(closeIcon) closeIcon.addEventListener('click', closeModal);
+                if(closeBtn) closeBtn.addEventListener('click', closeModal);
+                document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
+
+                document.addEventListener('click', function(e){
+                    const item = e.target.closest('.expense-item');
+                    if(item){
+                        const sharesRaw = item.dataset.shares;
+                        if(sharesRaw && modal){
+                            try {
+                                const shares = JSON.parse(sharesRaw);
+                                list.innerHTML = '';
+                                
+                                titleEl.textContent = item.dataset.title || 'Expense';
+                                dateEl.textContent = item.dataset.date || '';
+                                paidByEl.textContent = item.dataset.paidBy || 'Unknown';
+                                const totalAmount = parseFloat(item.dataset.amount || 0).toFixed(2);
+                                amountEl.textContent = '₹' + totalAmount;
+
+                                let hasItems = false;
+                                for(let [name, amount] of Object.entries(shares)){
+                                    if(Math.abs(amount) < 0.01) continue;
+                                    hasItems = true;
+                                    const shareAmt = parseFloat(amount).toFixed(2);
+                                    
+                                    const row = document.createElement('div');
+                                    row.className = 'flex items-center justify-between p-3 rounded-xl bg-white border border-slate-100';
+                                    
+                                    row.innerHTML = `
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500">
+                                                ${name.charAt(0).toUpperCase()}
+                                            </div>
+                                            <span class="font-bold text-slate-700 text-sm">${name}</span>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="font-bold text-slate-700">₹${shareAmt}</span>
+                                        </div>
+                                    `;
+                                    list.appendChild(row);
+                                }
+                                if(!hasItems){
+                                    list.innerHTML = '<p class="text-center text-slate-400 text-sm">No split details available</p>';
+                                }
+
+                                modal.classList.remove('hidden');
+                                document.body.style.overflow = 'hidden';
+
+                            } catch(err){ console.error('Error parsing expense data', err); }
                         }
                     }
                 });

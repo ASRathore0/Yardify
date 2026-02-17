@@ -10,7 +10,7 @@ class ExpenseGroup extends Model
     use SoftDeletes;
     protected $table = 'expense_groups';
 
-    protected $fillable = ['name', 'description', 'currency', 'members', 'created_by'];
+    protected $fillable = ['name', 'description', 'currency', 'members', 'created_by', 'image'];
 
     protected $casts = [
         'members' => 'array',

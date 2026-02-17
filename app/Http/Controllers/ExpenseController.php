@@ -48,9 +48,19 @@ class ExpenseController extends Controller
                 return [
                     'id' => $g->id,
                     'name' => $g->name,
+                    'image' => $g->image,
                     'created_by' => $g->created_by,
                     'currency' => $g->currency,
-                    'members' => $this->normalizeMembers($g->members ?? []),
+                    // enrich members with avatar and id
+                    'members' => collect($this->normalizeMembers($g->members ?? []))->map(function($m){
+                        $user = User::where('name', $m)->orWhere('email', $m)->first();
+                        return [
+                            'name' => $user ? $user->name : $m,
+                            'avatar' => $user ? $user->avatar_path : null,
+                            'id' => $user ? $user->id : null,
+                            'initial' => substr($user ? $user->name : $m, 0, 1),
+                        ];
+                    })->toArray(),
                     'deleted' => $g->deleted_at ? true : false,
                     'deleted_at' => $g->deleted_at ? $g->deleted_at->toDateTimeString() : null,
                     'expenses' => $g->deleted_at ? [] : $g->expenses->map(function($e){
@@ -77,15 +87,16 @@ class ExpenseController extends Controller
                 $found = collect($groups)->firstWhere('id', (int)$selected);
                     if ($found) {
                     $group = $found;
-                    $members = $group['members'];
-                    $balances = array_fill_keys($members, 0.0);
+                    // extract member names for calculation
+                    $memberNames = array_column($group['members'], 'name');
+                    $balances = array_fill_keys($memberNames, 0.0);
                     foreach ($group['expenses'] as $e) {
                         foreach ($e['shares'] as $m => $amt) {
-                            $mapped = $this->mapShareKey($m, $members);
+                            $mapped = $this->mapShareKey($m, $memberNames);
                             if (!isset($balances[$mapped])) $balances[$mapped] = 0.0;
                             $balances[$mapped] -= $amt;
                         }
-                        $payer = $this->mapShareKey($e['paid_by'], $members);
+                        $payer = $this->mapShareKey($e['paid_by'], $memberNames);
                         if (!isset($balances[$payer])) $balances[$payer] = 0.0;
                         $balances[$payer] += $e['amount'];
                     }
@@ -267,6 +278,29 @@ class ExpenseController extends Controller
         }
 
         return redirect()->back()->with('success', 'Group created successfully');
+    }
+
+    public function updateImage(Request $request, $group)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $g = ExpenseGroup::findOrFail($group);
+        
+        // Authorization: owner only
+        if ($g->created_by != auth()->id()) {
+            abort(403, 'Only the group owner can change the image.');
+        }
+
+        if ($request->hasFile('image')) {
+            $imageName = time().'_'.$g->id.'.'.$request->image->extension();
+            $request->image->move(public_path('images/groups'), $imageName);
+            $g->image = 'images/groups/'.$imageName;
+            $g->save();
+        }
+
+        return back()->with('success', 'Group image updated successfully.');
     }
 
     // Add an expense to a group and compute balances
