@@ -158,6 +158,8 @@ class ExpenseController extends Controller
             }
             $items[] = [
                 'id' => 'e'.$e->id,
+                'raw_id' => $e->id,
+                'created_by' => $e->created_by,
                 'title' => $e->title ?? ($e->note ?? 'Expense'),
                 'amount' => (float)$e->amount,
                 'paid_by' => $e->payer_name ?? $e->payer_id,
@@ -165,6 +167,8 @@ class ExpenseController extends Controller
                 'split_method' => $e->split_method,
                 'shares' => $shares,
                 'created_at' => optional($e->spent_at)->toDateTimeString() ?? $e->created_at->toDateTimeString(),
+                'updated_at' => $e->updated_at->toDateTimeString(),
+                'is_edited' => $e->updated_at->gt($e->created_at),
             ];
         }
 
@@ -386,6 +390,7 @@ class ExpenseController extends Controller
         DB::transaction(function() use ($g, $data, $shares, $amount) {
             $expense = Expense::create([
                 'group_id' => $g->id,
+                'created_by' => auth()->id(),
                 'payer_name' => $data['paid_by'],
                 'amount' => $amount,
                 'currency' => $g->currency ?? 'USD',
@@ -418,6 +423,8 @@ class ExpenseController extends Controller
             foreach ($e->shares as $s) $sarr[$s->member] = (float)$s->amount;
             $resp['expenses'][] = [
                 'id' => 'e'.$e->id,
+                'raw_id' => $e->id,
+                'created_by' => $e->created_by,
                 'title' => $e->note ?? 'Expense',
                 'amount' => (float)$e->amount,
                 'paid_by' => $e->payer_name ?? $e->payer_id,
@@ -448,6 +455,120 @@ class ExpenseController extends Controller
         }
 
         return redirect()->route('expense.groups.show', ['group' => $g->id]);
+    }
+
+    public function updateExpense(Request $request, $id)
+    {
+        $e = Expense::findOrFail($id);
+        
+        // Authorization: created_by ONLY
+        if ($e->created_by != auth()->id()) {
+            abort(403, 'You can only edit expenses you added.');
+        }
+
+        $rules = [
+            'title' => 'required|string|max:200',
+            'amount' => 'required|numeric|min:0',
+            'paid_by' => 'required|string',
+            'category' => 'required|string',
+            'split_method' => 'required|string|in:equal,exact,percent',
+            'exact_shares' => 'nullable',
+            'percent_shares' => 'nullable',
+            'involved_members' => 'required_if:is_custom_split,1|array|min:1',
+        ];
+
+        $data = $request->validate($rules);
+        $g = ExpenseGroup::findOrFail($e->group_id);
+
+        $members = $this->normalizeMembers($g->members ?? []);
+        $involved = $members;
+        if ($request->has('is_custom_split')) {
+             $involved = array_values(array_intersect($members, $request->involved_members));
+        } elseif ($request->has('involved_members') && is_array($request->involved_members)) {
+             $involved = array_values(array_intersect($members, $request->involved_members));
+        }
+
+        $n = count($involved) ?: 1;
+        $amount = (float)$data['amount'];
+        $shares = [];
+
+        // Simplified logic for update (same as store)
+        if ($data['split_method'] === 'equal') {
+            $per = round($amount / $n, 2);
+            foreach ($members as $m) {
+                $shares[$m] = in_array($m, $involved) ? $per : 0;
+            }
+        } // ... For simplicity, we are handling 'equal' split primarily for this quick edit implementation. 
+          // If 'exact' or 'percent' are needed, the logic from storeExpense should be duplicated fully. 
+          // Assuming user sticks to equal split for now or we duplicate logic.
+
+        // DUPLICATING LOGIC FOR ROBUSTNESS
+        elseif ($data['split_method'] === 'exact') {
+            $exact = $data['exact_shares'] ?? '';
+            $map = $this->parseKeyValueString($exact, $members);
+            $normalizedMap = [];
+            foreach ($map as $k => $v) {
+                $key = $this->mapShareKey($k, $members);
+                $normalizedMap[$key] = (float)$v;
+            }
+            foreach ($members as $m) $shares[$m] = isset($normalizedMap[$m]) ? (float)$normalizedMap[$m] : 0.0;
+        } else { // percent
+            $percent = $data['percent_shares'] ?? '';
+            $map = $this->parseKeyValueString($percent, $members);
+            $normalizedMap = [];
+            foreach ($map as $k => $v) {
+                $key = $this->mapShareKey($k, $members);
+                $normalizedMap[$key] = (float)$v;
+            }
+            foreach ($members as $m) {
+                $p = isset($normalizedMap[$m]) ? (float)$normalizedMap[$m] : 0;
+                $shares[$m] = round($amount * $p / 100, 2);
+            }
+        }
+
+        DB::transaction(function() use ($e, $data, $shares, $amount, $g) {
+            $e->update([
+                'payer_name' => $data['paid_by'],
+                'amount' => $amount,
+                'currency' => $g->currency ?? 'USD',
+                'split_method' => $data['split_method'],
+                'splits' => $shares,
+                'category' => $data['category'] ?? null,
+                'note' => $data['title'] ?? null,
+            ]);
+
+            $e->shares()->delete();
+
+            foreach ($shares as $member => $amt) {
+                ExpenseShare::create([
+                    'expense_id' => $e->id,
+                    'member' => $member,
+                    'amount' => $amt,
+                ]);
+            }
+        });
+
+        return back()->with('success', 'Expense updated successfully');
+    }
+
+    public function destroyExpense(Request $request, $id)
+    {
+        $e = Expense::findOrFail($id);
+        
+        // Authorization: created_by ONLY
+        if ($e->created_by != auth()->id()) {
+            abort(403, 'You can only delete expenses you added.');
+        }
+
+        // Check if group is settled after this expense?
+        // Ideally we should block deletion if part of a settlement, but settlements in this app 
+        // seem like snapshots. Deleting an expense will change future balance calculations which is intended.
+        
+        $group_id = $e->group_id;
+        $e->shares()->delete();
+        $e->delete();
+
+        return back()->with('success', 'Expense deleted successfully');
     }
 
     // Send invitations to group members (creates invitation records, optionally send email)

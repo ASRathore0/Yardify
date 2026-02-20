@@ -10,7 +10,7 @@ class Expense extends Model
 {
     protected $table = 'expenses';
 
-    protected $fillable = ['group_id','payer_id','payer_name','amount','currency','split_method','splits','category','note','spent_at'];
+    protected $fillable = ['group_id','payer_id','payer_name','amount','currency','split_method','splits','category','note','spent_at','created_by'];
 
     protected $casts = [
         'splits' => 'array',

@@ -133,9 +133,13 @@
                              data-shares="{{ json_encode($e['shares']) }}"
                              data-date="{{ \Carbon\Carbon::parse($e['created_at'])->format('M d, Y, h:i A') }}"
                              @if($e['category'] !== 'Settled')
+                                 data-id="{{ $e['raw_id'] }}"
+                                 data-created-by="{{ $e['created_by'] }}"
                                  data-title="{{ $e['title'] }}"
                                  data-amount="{{ $e['amount'] }}"
                                  data-paid-by="{{ $e['paid_by'] }}"
+                                 data-category="{{ $e['category'] }}"
+                                 data-is-edited="{{ $e['is_edited'] }}"
                              @endif
                         >
                             <div class="flex items-center gap-4">
@@ -147,7 +151,12 @@
                                     @endif
                                 </div>
                                 <div>
-                                    <p class="font-bold text-slate-800 leading-tight">{{ $e['title'] }}</p>
+                                    <p class="font-bold text-slate-800 leading-tight">
+                                        {{ $e['title'] }}
+                                        @if($e['is_edited'])
+                                            <span class="text-[10px] text-slate-400 font-normal italic ml-1">(edited)</span>
+                                        @endif
+                                    </p>
                                     <p class="text-xs text-slate-400 mt-0.5">
                                         {{ $e['paid_by'] }} paid • {{ \Carbon\Carbon::parse($e['created_at'])->format('M d, Y') }}
                                     </p>
@@ -183,12 +192,13 @@
                     <div class="bg-white w-full max-w-xl rounded-3xl shadow-lg max-h-[95vh] overflow-visible">
                     <div class="p-6">
                         <div class="flex items-start justify-between mb-4">
-                            <h3 class="text-lg font-bold">Add New Transaction</h3>
+                            <h3 id="expenseModalTitle" class="text-lg font-bold">Add New Transaction</h3>
                             <button id="closeExpenseModal" class="text-slate-400 hover:text-slate-600">✕</button>
                         </div>
 
                         <form id="expenseForm" class="space-y-4" method="POST" action="{{ url('/expense-management/groups/'.$group['id'].'/expenses') }}">
                             @csrf
+                            <div id="method-spoof"></div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="md:col-span-2">
                                     <label class="block text-xs font-bold text-slate-400 uppercase mb-2 ml-1">What was it for?</label>
@@ -355,8 +365,34 @@
                             <!-- Populated via JS -->
                         </div>
 
-                        <div class="mt-6 text-center">
+                        <div class="mt-6 text-center flex flex-col gap-3">
+                             <div id="expenseActions" class="hidden grid grid-cols-2 gap-3 mb-2">
+                                <button id="editExpenseBtn" class="px-4 py-2 bg-[#046c9f] text-white rounded-xl font-bold text-sm hover:bg-[#035680]">Edit</button>
+                                <button id="deleteExpenseBtn" class="px-4 py-2 bg-red-100 text-red-600 border border-red-200 rounded-xl font-bold text-sm hover:bg-red-50">Delete</button>
+                             </div>
                             <button id="closeEDBtn" class="px-6 py-2 bg-slate-100 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-200">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <form id="deleteExpenseForm" method="POST" class="hidden">@csrf @method('DELETE')</form>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div id="deleteConfirmModal" class="fixed inset-0 z-50 hidden">
+            <div id="deleteConfirmOverlay" class="absolute inset-0 bg-black/50"></div>
+            <div class="relative flex items-center justify-center min-h-full p-4 sm:p-6">
+                <div class="bg-white w-full max-w-md rounded-3xl shadow-lg overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-lg font-bold text-red-600">Delete Transaction</h3>
+                            <button id="closeDeleteConfirm" class="text-slate-400 hover:text-slate-600">✕</button>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-6">Are you sure you want to delete this transaction? This cannot be undone.</p>
+                        <div class="flex justify-end gap-3">
+                            <button id="cancelDelete" class="px-4 py-2 bg-white border border-slate-200 rounded-xl font-bold text-slate-700 hover:bg-slate-50">Cancel</button>
+                            <button id="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700">Delete It</button>
                         </div>
                     </div>
                 </div>
@@ -369,18 +405,24 @@
                 const isSelected = btn.classList.contains('bg-[#e0f2fe]');
                 
                 if (isSelected) {
-                    // Deselect style
-                    btn.classList.remove('bg-[#e0f2fe]', 'text-[#046c9f]', 'border-[#046c9f]');
-                    btn.classList.add('bg-slate-50', 'text-slate-400', 'border-slate-200', 'line-through', 'opacity-70');
-                    input.disabled = true; // Don't submit this value
-                    btn.querySelector('span:last-child').textContent = '+'; 
+                    deselectMember(btn, input);
                 } else {
-                    // Select style
-                    btn.classList.add('bg-[#e0f2fe]', 'text-[#046c9f]', 'border-[#046c9f]');
-                    btn.classList.remove('bg-slate-50', 'text-slate-400', 'border-slate-200', 'line-through', 'opacity-70');
-                    input.disabled = false; // Enable submission
-                    btn.querySelector('span:last-child').textContent = '✕';
+                    selectMember(btn, input);
                 }
+            }
+
+            function deselectMember(btn, input) {
+                btn.classList.remove('bg-[#e0f2fe]', 'text-[#046c9f]', 'border-[#046c9f]');
+                btn.classList.add('bg-slate-50', 'text-slate-400', 'border-slate-200', 'line-through', 'opacity-70');
+                input.disabled = true; 
+                btn.querySelector('span:last-child').textContent = '+'; 
+            }
+
+            function selectMember(btn, input) {
+                btn.classList.add('bg-[#e0f2fe]', 'text-[#046c9f]', 'border-[#046c9f]');
+                btn.classList.remove('bg-slate-50', 'text-slate-400', 'border-slate-200', 'line-through', 'opacity-70');
+                input.disabled = false;
+                btn.querySelector('span:last-child').textContent = '✕';
             }
         </script>
 
@@ -391,9 +433,92 @@
                 const openTop = document.getElementById('openExpenseModalTop');
                 const openMain = document.getElementById('openExpenseModal');
                 const close = document.getElementById('closeExpenseModal');
+                const form = document.getElementById('expenseForm');
+                const modalTitle = document.getElementById('expenseModalTitle');
+                const methodSpoof = document.getElementById('method-spoof');
+                const defaultAction = form ? form.action : '';
+                
+                // Expose openEditModal globally (dirty but works)
+                window.openEditModal = function(item) {
+                     if(!modal) return;
+                     
+                     // Set to Edit Mode
+                     modalTitle.textContent = 'Edit Transaction';
+                     form.action = "{{ url('/expense-management/expenses') }}/" + item.dataset.id;
+                     methodSpoof.innerHTML = '<input type="hidden" name="_method" value="PUT">';
+                     
+                     // Populate fields
+                     form.elements['title'].value = item.dataset.title || '';
+                     form.elements['amount'].value = item.dataset.amount || '';
+                     form.elements['paid_by'].value = item.dataset.paidBy || '';
+                     form.elements['category'].value = item.dataset.category || 'Rent';
+                     
+                     // Reset members: first select all logic, then verify against shares
+                     // BUT, shares includes ALL members with 0 amount usually? No, show logic iterates over non-zero.
+                     // The backend stores ONLY members with amounts in DB? No, stores all shares usually 0 or not.
+                     // The `data-shares` is JSON object {name: amount}.
+                     // If amount > 0 => member is involved.
+                     
+                     const shares = JSON.parse(item.dataset.shares || '{}');
+                     const involvedNames = Object.keys(shares).filter(k => Math.abs(parseFloat(shares[k])) > 0.001);
+                     
+                     // If split method is equal, we select strictly based on involved
+                     // For exact/percent, current simple edit form doesn't support fine grained editing yet, falls back to "Equal among selected"
+                     // User will overwrite split method to 'equal' effectively if they save.
+                     // For now let's assume simple equal split editing.
+                     
+                     // Iterate all member toggles
+                     const chips = document.getElementById('member-chips').children;
+                     // Each child is button + hidden input. But loop structure is button, hidden, button, hidden...
+                     // Wait, blade loop: button, input. So children[0] is button, children[1] is input...
+                     // Actually easier to select by ID since we have indices.
+                     // But we don't have indices easily in JS unless we iterate.
+                     
+                     // Let's iterate inputs starting with 'hidden-input-'
+                     const inputs = document.querySelectorAll('input[id^="hidden-input-"]');
+                     inputs.forEach(input => {
+                         const name = input.value; // The name of member
+                         const index = input.id.replace('hidden-input-', '');
+                         const btn = input.previousElementSibling; 
+                         
+                         // Check if name is in involvedNames
+                         if (involvedNames.includes(name)) {
+                             selectMember(btn, input);
+                         } else {
+                             deselectMember(btn, input);
+                         }
+                     });
+                     
+                     modal.classList.remove('hidden');
+                     document.body.style.overflow = 'hidden';
+                     
+                     // Close details modal if open
+                     const detailsModal = document.getElementById('expenseDetailsModal');
+                     if(detailsModal && !detailsModal.classList.contains('hidden')){
+                         detailsModal.classList.add('hidden');
+                         // Also hide actions div in details modal
+                         const actions = document.getElementById('expenseActions');
+                         if(actions) actions.classList.add('hidden');
+                     }
+                };
 
                 function openModal(){
                     if(!modal) return;
+                    // Reset to Create Mode
+                    modalTitle.textContent = 'Add New Transaction';
+                    if(form) {
+                        form.action = defaultAction;
+                        form.reset();
+                    }
+                    if(methodSpoof) methodSpoof.innerHTML = '';
+                    
+                    // Select all members by default
+                    const inputs = document.querySelectorAll('input[id^="hidden-input-"]');
+                    inputs.forEach(input => {
+                         const btn = input.previousElementSibling;
+                         selectMember(btn, input);
+                    });
+                    
                     modal.classList.remove('hidden');
                     document.body.style.overflow = 'hidden';
                 }
@@ -655,13 +780,61 @@
                 const paidByEl = document.getElementById('edPaidBy');
                 const amountEl = document.getElementById('edAmount');
                 const groupMembers = @json($group['members']);
+                const currentUserId = {{ auth()->id() ?? 'null' }};
 
+                const actionsDiv = document.getElementById('expenseActions');
+                const deleteBtn = document.getElementById('deleteExpenseBtn');
+                const editBtn = document.getElementById('editExpenseBtn');
+                const deleteForm = document.getElementById('deleteExpenseForm');
+                
                 function closeModal(){
                     if(modal) {
                         modal.classList.add('hidden');
                         document.body.style.overflow = 'auto';
+                        actionsDiv.classList.add('hidden');
                     }
                 }
+                const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+                const deleteConfirmOverlay = document.getElementById('deleteConfirmOverlay');
+                const closeDeleteConfirm = document.getElementById('closeDeleteConfirm');
+                const cancelDelete = document.getElementById('cancelDelete');
+                const confirmDelete = document.getElementById('confirmDelete');
+
+                function openDeleteModal() {
+                    if(deleteConfirmModal) {
+                        deleteConfirmModal.classList.remove('hidden');
+                        document.body.style.overflow = 'hidden';
+                    }
+                }
+                function closeDeleteModal() {
+                    if(deleteConfirmModal) {
+                        deleteConfirmModal.classList.add('hidden');
+                        document.body.style.overflow = 'auto'; // assuming expense details modal is also closed or handles scroll
+                        // If expense details model is still open, we might want to keep scroll hidden?
+                        // But expense details modal sets scroll hidden too.
+                        // Let's just restore 'hidden' if details modal is open.
+                        if(modal && !modal.classList.contains('hidden')) {
+                            document.body.style.overflow = 'hidden';
+                        }
+                    }
+                }
+
+                if(deleteBtn) {
+                     deleteBtn.addEventListener('click', function(e){
+                        e.preventDefault();
+                        openDeleteModal();
+                     });
+                }
+                if(closeDeleteConfirm) closeDeleteConfirm.addEventListener('click', closeDeleteModal);
+                if(cancelDelete) cancelDelete.addEventListener('click', closeDeleteModal);
+                if(deleteConfirmOverlay) deleteConfirmOverlay.addEventListener('click', closeDeleteModal);
+                if(confirmDelete) confirmDelete.addEventListener('click', function(){
+                    confirmDelete.disabled = true;
+                    confirmDelete.textContent = 'Deleting...';
+                    deleteForm.submit();
+                });
+
+
 
                 if(overlay) overlay.addEventListener('click', closeModal);
                 if(closeIcon) closeIcon.addEventListener('click', closeModal);
@@ -677,11 +850,28 @@
                                 const shares = JSON.parse(sharesRaw);
                                 list.innerHTML = '';
                                 
-                                titleEl.textContent = item.dataset.title || 'Expense';
+                                titleEl.innerHTML = (item.dataset.title || 'Expense') + (item.dataset.isEdited == '1' ? ' <span class="text-[10px] text-slate-400 font-normal italic inline-block transform translate-y-[-2px]">(edited)</span>' : '');
                                 dateEl.textContent = item.dataset.date || '';
                                 paidByEl.textContent = item.dataset.paidBy || 'Unknown';
                                 const totalAmount = parseFloat(item.dataset.amount || 0).toFixed(2);
                                 amountEl.textContent = '₹' + totalAmount;
+                                
+                                // Show actions if owner
+                                const creatorId = item.dataset.createdBy;
+                                if(currentUserId && creatorId && currentUserId == creatorId){
+                                    actionsDiv.classList.remove('hidden');
+                                    actionsDiv.style.display = 'grid'; // ensure grid
+                                    // Set delete form action
+                                    deleteForm.action = "{{ url('/expense-management/expenses') }}/" + item.dataset.id;
+                                    // Set edit listener
+                                    editBtn.onclick = function(){
+                                        // TODO: Open edit modal
+                                        openEditModal(item);
+                                    };
+                                } else {
+                                    actionsDiv.classList.add('hidden');
+                                    actionsDiv.style.display = 'none';
+                                }
 
                                 let hasItems = false;
                                 for(let [name, amount] of Object.entries(shares)){

@@ -131,6 +131,8 @@ Route::middleware('auth')->group(function(){
     Route::get('/expense-management/groups/create', [ExpenseController::class, 'create'])->name('expense.groups.create');
     Route::get('/expense-management/groups/{group}', [ExpenseController::class, 'show'])->name('expense.groups.show');
     Route::post('/expense-management/groups/{group}/image', [ExpenseController::class, 'updateImage'])->name('expense.groups.image');
+    Route::delete('/expense-management/expenses/{expense}', [ExpenseController::class, 'destroyExpense'])->name('expense.delete');
+    Route::put('/expense-management/expenses/{expense}', [ExpenseController::class, 'updateExpense'])->name('expense.update');
     Route::delete('/expense-management/groups/{group}', [ExpenseController::class, 'destroy'])->name('expense.groups.destroy');
 });
 
