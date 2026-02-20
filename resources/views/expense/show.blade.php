@@ -112,8 +112,8 @@
                         <form method="GET" id="perPageForm" action="{{ url()->current() }}" class="flex items-center m-0">
                             <div class="relative">
                                 <select name="per_page" class="appearance-none text-xs bg-slate-50 hover:bg-slate-100 rounded-lg pl-3 pr-7 py-2 font-bold text-slate-600 focus:outline-none transition-colors cursor-pointer border-0" onchange="document.getElementById('perPageForm').submit()">
-                                    <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>Show 10</option>
-                                    <option value="20" {{ request('per_page', 20) == 20 ? 'selected' : '' }}>Show 20</option>
+                                    <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>Show 10</option>
+                                    <option value="20" {{ request('per_page',) == 20 ? 'selected' : '' }}>Show 20</option>
                                     <option value="40" {{ request('per_page') == 40 ? 'selected' : '' }}>Show 40</option>
                                     <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>Show 50</option>
                                 </select>
@@ -129,7 +129,7 @@
                 
                 <div class="divide-y divide-slate-50">
                     @forelse($group['expenses'] as $e)
-                        <div class="px-8 py-5 flex items-center justify-between hover:bg-slate-50 transition cursor-pointer {{ $e['category'] === 'Settled' ? 'settlement-item' : 'expense-item' }}"
+                        <div class="px-6 py-5 flex items-center justify-between hover:bg-slate-50 transition cursor-pointer {{ $e['category'] === 'Settled' ? 'settlement-item' : 'expense-item' }}"
                              data-shares="{{ json_encode($e['shares']) }}"
                              data-date="{{ \Carbon\Carbon::parse($e['created_at'])->format('M d, Y, h:i A') }}"
                              @if($e['category'] !== 'Settled')
@@ -189,7 +189,7 @@
          <div id="expenseModal" class="fixed inset-0 z-50 hidden">
             <div id="expenseModalOverlay" class="absolute inset-0 bg-black/50"></div>
             <div class="relative flex items-center justify-center min-h-full p-4 sm:p-6">
-                    <div class="bg-white w-full max-w-xl rounded-3xl shadow-lg max-h-[95vh] overflow-visible">
+                    <div class="bg-white w-full max-w-xl rounded-3xl shadow-lg max-h-[85vh] overflow-visible">
                     <div class="p-6">
                         <div class="flex items-start justify-between mb-4">
                             <h3 id="expenseModalTitle" class="text-lg font-bold">Add New Transaction</h3>

@@ -214,6 +214,7 @@ class ExpenseController extends Controller
                 'split_method' => 'settlement',
                 'shares' => $s->snapshot ?? [],
                 'created_at' => $s->created_at->toDateTimeString(),
+				'is_edited' => false,
             ];
         }
 
