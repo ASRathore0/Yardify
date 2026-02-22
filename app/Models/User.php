@@ -64,4 +64,9 @@ class User extends Authenticatable
         if (str_starts_with($this->avatar_path, 'http')) return $this->avatar_path;
         return asset('storage/' . $this->avatar_path);
     }
+
+    public function apiTokens()
+    {
+        return $this->hasMany(\App\Models\ApiToken::class);
+    }
 }
