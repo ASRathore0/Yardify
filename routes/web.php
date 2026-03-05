@@ -113,6 +113,8 @@ Route::middleware('auth')->group(function(){
 
 // Public explore / landing page for features like Rent Houses and Expense Management
 Route::view('/explore', 'explore')->name('explore');
+Route::get('/professional/{id}', [App\Http\Controllers\VendorController::class, 'show'])->name('professional.show');
+
 
 // Simple page for the 1X1 quick-links (opened from mobile footer)
 Route::view('/one-x-one', 'partials.one-x-one')->name('one_x_one');
@@ -143,4 +145,15 @@ Route::get('/expense-management/invite/accept/{token}', [ExpenseController::clas
 // Careers application
 Route::get('/careers', [CareerController::class, 'show'])->name('careers.show');
 Route::post('/careers', [CareerController::class, 'submit'])->name('careers.submit');
+
+
+Route::post('/save-location', [App\Http\Controllers\LocationController::class, 'saveLocation'])->name('save.location');
+
+
+Route::post('/save-location', [App\Http\Controllers\LocationController::class, 'saveLocation'])->name('save.location');
+
+
+Route::post('/bookings', [App\Http\Controllers\BookingController::class, 'store'])->name('bookings.store');
+Route::get('/my-bookings', [App\Http\Controllers\BookingController::class, 'userBookings'])->name('my.bookings');
+Route::put('/vendor/bookings/{booking}/status', [App\Http\Controllers\BookingController::class, 'updateStatus'])->name('vendor.bookings.update');
 

@@ -3,26 +3,57 @@
 @section('content')
 @include('partials.header')
 @include('partials.sidebar')
+
+<!-- Including FontAwesome and Inter Font to match the platform -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
 <style>
     :root {
         --primary: #046c9f;
-        --primary-dark: #035680;
-        --accent: #f8fafc;
+        --primary-dark: #035b88;
     }
-    body { background-color: #f3f4f6; }
+    body { 
+        background-color: #f8fafc; /* matching platform background */
+        font-family: 'Inter', sans-serif;
+    }
 
     /* Modern Hero */
     .dashboard-header {
-        background: linear-gradient(135deg, #046c9f 0%, #034d71 100%);
-        padding: 60px 0 90px 0;
-        border-radius: 0 0 40px 40px;
+        background: radial-gradient(circle at top right, #0482bd, #034b6e);
+        padding: 30px 0 50px 0; /* Clear fixed header */
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dashboard-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -10%;
+        width: 50%;
+        height: 150%;
+        background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+        transform: rotate(-45deg);
+        pointer-events: none;
+    }
+    
+    .dashboard-header::after {
+        content: '';
+        position: absolute;
+        bottom: -20%;
+        right: -5%;
+        width: 40%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 60%);
+        border-radius: 50%;
+        pointer-events: none;
     }
 
     /* Floating Stats Card */
     .stats-overlay {
-        margin-top: -50px;
+        margin-top: -25px;
         position: relative;
         z-index: 10;
     }
@@ -38,32 +69,35 @@
         border-color: var(--primary);
     }
 
-    /* Custom Scrollbar for better UX */
+    /* Custom Scrollbar */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #f1f1f1; }
-    ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
-    
-    .status-badge {
-        padding: 4px 12px;
-        border-radius: 999px;
-        font-size: 0.7rem;
-        font-weight: 700;
-        text-transform: uppercase;
-    }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 </style>
 
 <!-- Hero Section -->
-<section class="dashboard-header text-white">
-    <div class="max-w-7xl mx-auto px-6 mt-8">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div class="font-sans max-w-md mx-auto text-center">
-                <h2 class="text-2xl font-medium tracking-tight leading-tight text-white">Manage Expenses</h2>
+<section class="dashboard-header shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-5 md:gap-4">
+            <div class="text-center md:text-left">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white text-[10px] font-bold uppercase tracking-widest mb-3 backdrop-blur-sm shadow-sm">
+                    <i class="fas fa-wallet text-blue-200"></i> Split Bills & Share Costs
+                </div>
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-2 drop-shadow-sm leading-tight">
+                    Manage Expenses
+                </h2>
+                <p class="text-blue-50 text-sm font-medium max-w-sm mx-auto md:mx-0 leading-relaxed">
+                    Track shared costs with friends, split bills fairly, and settle balances effortlessly.
+                </p>
             </div>
-            <div class="w-full flex justify-center">
+            <div class="shrink-0 w-full sm:w-auto mt-2 md:mt-0">
                 <button onclick="document.getElementById('createGroupModal').classList.remove('hidden')" 
-                   class="inline-flex items-center px-6 py-3 bg-white text-[#046c9f] rounded-2xl font-bold shadow-xl hover:bg-blue-50 transition-all transform hover:scale-105">
-                    <svg class="w-5 h-5 mr-2" style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    New Group
+                   class="inline-flex items-center justify-center px-5 py-3 bg-white text-[#046c9f] text-sm rounded-xl font-bold shadow-lg hover:shadow-xl hover:bg-slate-50 transition-all transform hover:-translate-y-1 w-full sm:w-auto border border-white/40 group">
+                    <div class="bg-blue-50 w-7 h-7 rounded-full flex items-center justify-center mr-2 group-hover:bg-blue-100 transition-colors">
+                        <i class="fas fa-plus text-xs"></i>
+                    </div>
+                    Create Workspace
                 </button>
             </div>
         </div>
@@ -71,42 +105,35 @@
 </section>
 
 <!-- Main Content Area -->
-<div class="max-w-7xl mx-auto px-6 pb-28">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-28">
     
     <!-- Stats Overlay -->
-    <div class="stats-overlay grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        @php $total = collect($groups)->flatMap(fn($g) => $g['expenses'])->sum('amount'); @endphp
+    <div class="stats-overlay mb-10">
+        @php 
+            $total = collect($groups)->flatMap(fn($g) => $g['expenses'])->sum('amount'); 
+        @endphp
         
-        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center space-x-4">
-            <div class="bg-blue-50 p-4 rounded-2xl text-[#046c9f]">
-                <svg class="w-8 h-8" style="width: 2rem; height: 2rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-            </div>
-            <div>
-                <p class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Active Groups</p>
-                <p class="text-2xl font-black text-slate-800">{{ count($groups) }}</p>
+        <div class="bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-between p-4 max-w-[260px] mx-auto md:mx-0">
+            <div class="flex items-center space-x-4">
+                <div class="bg-blue-50 w-12 h-12 flex items-center justify-center rounded-xl text-[#046c9f]">
+                    <i class="fas fa-layer-group text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Active Workspaces</p>
+                    <p class="text-2xl font-black text-slate-800 leading-none">{{ count($groups) }}</p>
+                </div>
             </div>
         </div>
-
-        <!-- <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center space-x-4 md:col-span-2">
-            <div class="bg-green-50 p-4 rounded-2xl text-green-600">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            </div>
-            <div>
-                <p class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Total Combined Spend</p>
-                <p class="text-3xl font-black text-slate-900">₹{{ number_format($total, 2) }}</p>
-            </div>
-        </div> -->
     </div>
 
     <!-- Groups Section -->
     <div class="flex items-center justify-between mb-8">
-        <h3 class="text-xl font-bold text-slate-800 flex items-center">
+        <h3 class="text-xl font-extrabold text-slate-800 flex items-center tracking-tight">
             Your Workspaces
-            <span class="ml-3 px-3 py-1 bg-slate-200 text-slate-600 text-xs rounded-full">{{ count($groups) }} Total</span>
         </h3>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse($groups as $g)
             @php 
                 $gTotal = collect($g['expenses'])->sum('amount'); 

@@ -102,10 +102,11 @@
             <span>Home</span>
         </a>
 
-        <!-- Services Parent -->
-        <a href="#" id="servicesToggle" role="button" aria-expanded="false" class="menu-item-parent" onclick="event.preventDefault(); window.bookingyardToggleServices();">
-            <i class="fa-solid fa-briefcase" style="width: 20px;"></i>
-            <span>Services</span>
+          <!-- My Bookings -->
+          <a href="/my-bookings" class="menu-item-parent {{ request()->is('my-bookings*') ? 'active' : '' }}">
+              <i class="fa-solid fa-calendar-check" style="width: 20px;"></i>
+              <span>My Bookings</span>
+          </a>
             <i class="fa-solid fa-chevron-down" style="margin-left: auto; font-size: 0.7rem; transition: 0.3s;"></i>
         </a>
 
@@ -133,13 +134,16 @@
 
         <!-- Vendor Submenu (The "Branch" style) -->
         <div id="vendorSubmenu" class="submenu-container" style="display: none;">
-            <a href="/vendor/dashboard" class="submenu-item {{ request()->is('vendor/dashboard') ? 'active-sub' : '' }}">
-                <span>Dashboard</span>
-            </a>
-            <a href="/vendor" class="submenu-item {{ request()->is('vendor') ? 'active-sub' : '' }}">
-                <span>List Businesses</span>
-            </a>
-        </div>
+              <a href="/vendor/dashboard" class="submenu-item {{ request()->is('vendor/dashboard') ? 'active-sub' : '' }}">
+                  <span>Dashboard</span>
+              </a>
+              <a href="/vendor/bookings" class="submenu-item {{ request()->is('vendor/bookings') ? 'active-sub' : '' }}">
+                  <span>Received Bookings</span>
+              </a>
+              <a href="/vendor" class="submenu-item {{ request()->is('vendor') ? 'active-sub' : '' }}">
+                  <span>List Businesses</span>
+              </a>
+          </div>
 
         <p style="font-size: 0.65rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.2px; margin: 25px 0 10px 12px;">Company</p>
 

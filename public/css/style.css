@@ -2163,10 +2163,10 @@ color: #046c9f;
 .service-box img {
   width: 80px;
   height: 80px;
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
   border-radius: 8px;
   object-fit: cover;
-  border: 2px solid #ddd;
+  /* border: 2px solid #ddd; */
 }
 
   
@@ -2610,6 +2610,4 @@ color: #046c9f;
   margin-right: 8px;
 }
 
-b o d y   {   b a c k g r o u n d - c o l o r :   # f 0 f 0 f 0   ! i m p o r t a n t ;   } 
- 
- 
+ 

@@ -116,6 +116,12 @@ class VendorController extends Controller
         return view('vendor/services', compact('vendors'));
     }
 
+    public function show($id)
+    {
+        $vendor = \App\Models\Vendor::with('services')->findOrFail($id);
+        return view('professional.show', compact('vendor'));
+    }
+
     // Public: search for vendors by filters
     public function search(Request $request)
     {

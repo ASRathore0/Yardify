@@ -48,9 +48,16 @@
         <div style="margin-bottom: 25px;">
             <p style="font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; margin-left: 10px; margin-bottom: 10px;">Personal Settings</p>
             <div style="background: white; border-radius: 20px; overflow: hidden; border: 1px solid #f1f5f9;">
+                <a href="{{ route('my.bookings') }}" class="menu-item" style="display: flex; align-items: center; justify-content: space-between; padding: 15px; text-decoration: none; border-bottom: 1px solid #f8fafc; transition: 0.2s;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div style="width: 38px; height: 38px; border-radius: 10px; background: #e0f2fe; color: #046c9f; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-calendar-check"></i></div>
+                        <span style="font-size: 0.95rem; font-weight: 600; color: #334155;">My Bookings</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="color: #cbd5e0; font-size: 0.8rem;"></i>
+                </a>
                 <a href="#" class="menu-item" style="display: flex; align-items: center; justify-content: space-between; padding: 15px; text-decoration: none; border-bottom: 1px solid #f8fafc; transition: 0.2s;">
                     <div style="display: flex; align-items: center; gap: 15px;">
-                        <div style="width: 38px; height: 38px; border-radius: 10px; background: #e0f2fe; color: #0369a1; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-wallet"></i></div>
+                        <div style="width: 38px; height: 38px; border-radius: 10px; background: #fef9c3; color: #ca8a04; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-wallet"></i></div>
                         <span style="font-size: 0.95rem; font-weight: 600; color: #334155;">My Wallet</span>
                     </div>
                     <i class="fa-solid fa-chevron-right" style="color: #cbd5e0; font-size: 0.8rem;"></i>

@@ -35,16 +35,46 @@ function getCurrentLocation() {
     const start = Date.now();
     const opts = { enableHighAccuracy: false, timeout: 5000, maximumAge: 600000 };
 
+    if (locationInput) {
+        locationInput.placeholder = "Fetching location...";
+    }
+
     navigator.geolocation.getCurrentPosition(
-        position => {
+        async position => {
             const took = Date.now() - start;
             console.log('getCurrentPosition success in', took, 'ms');
             const userLat = position.coords.latitude;
             const userLng = position.coords.longitude;
+
+            try {
+                // Fetch full location using OpenStreetMap Nominatim API
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${userLat}&lon=${userLng}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.display_name) {
+                        let fullAddress = data.display_name;
+                        // Optional: you can extract specific parts if display_name is too long,
+                        // but user requested "full location name".
+                        if (locationInput) {
+                            locationInput.value = fullAddress; saveLocationToDatabase(fullAddress);
+                            locationInput.placeholder = "Search for services or your city...";
+                        }
+                        if (typeof window.loadVendorsForSelection === 'function') {
+                            setTimeout(window.loadVendorsForSelection, 250);
+                        }
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.warn('Reverse geocoding failed', error);
+            }
+
+            // Fallback if API fails
+            if (locationInput) locationInput.placeholder = "Search for services or your city...";
             const nearestLocation = findNearestLocation(userLat, userLng);
 
             if (nearestLocation) {
-                if (locationInput) locationInput.value = nearestLocation.name;
+                if (locationInput) locationInput.value = nearestLocation.name; saveLocationToDatabase(nearestLocation.name);
                 if (typeof window.loadVendorsForSelection === 'function') {
                     setTimeout(window.loadVendorsForSelection, 250);
                 }
@@ -54,7 +84,14 @@ function getCurrentLocation() {
             }
         },
         (err) => {
+            if (locationInput) locationInput.placeholder = "Search for services or your city...";
             console.warn('getCurrentPosition failed', err);
+            
+            if (err.code === 1) {
+                // code 1 means PERMISSION_DENIED
+                alert("Location access is denied by your browser. Please click the site settings icon (🔒) in your address bar, allow Location permissions, and try again so we can fetch your exact address!");
+            }
+            
             // try a quick IP-based lookup as fallback
             fallbackToIp();
         },
@@ -103,16 +140,23 @@ function fallbackToIp() {
     return fetch('https://ipapi.co/json/')
         .then(r => r.ok ? r.json() : Promise.reject('ip lookup failed'))
         .then(data => {
-            const city = (data.city || data.region || '').toString().trim();
+            const city = (data.city || '').toString().trim();
+            const region = (data.region || '').toString().trim();
+            const country = (data.country_name || '').toString().trim();
             const lat = data.latitude || data.lat || null;
             const lon = data.longitude || data.lon || data.longitude || null;
-            if (city && locationInput) {
-                locationInput.value = city;
-                console.log('Filled city from IP lookup:', city);
+            const fullLocation = [city, region, country].filter(Boolean).join(', ');
+            
+            if (fullLocation && locationInput) {
+                locationInput.value = fullLocation; saveLocationToDatabase(fullLocation);
+                console.log('Filled location from IP lookup:', fullLocation);
+                if (typeof window.loadVendorsForSelection === 'function') {
+                    setTimeout(window.loadVendorsForSelection, 300);
+                }
             }
             if (lat && lon) {
                 const nearest = findNearestLocation(Number(lat), Number(lon));
-                if (nearest && locationInput) locationInput.value = nearest.name;
+                if (nearest && locationInput) { locationInput.value = nearest.name; saveLocationToDatabase(nearest.name); }
             }
             if (typeof window.loadVendorsForSelection === 'function') setTimeout(window.loadVendorsForSelection, 250);
             return true;
@@ -456,3 +500,18 @@ function showDetails(event, button) {
       }
   }
 }
+
+
+
+function saveLocationToDatabase(loc) {
+    if (!loc) return;
+    fetch('/save-location', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ location: loc })
+    }).catch(err => console.error('Error saving location', err));
+}
+

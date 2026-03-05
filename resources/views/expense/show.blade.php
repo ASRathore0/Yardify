@@ -6,7 +6,7 @@
 @include('partials.sidebar')
 <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
-<div class="max-w-6xl mx-auto px-4 py-12 mt-6">
+<div class="max-w-6xl mx-auto px-4 py-8 mt-">
     
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>

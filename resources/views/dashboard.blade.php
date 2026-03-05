@@ -62,402 +62,653 @@
 </script>
  
 
-<section class="hero" id="home">
-  <div class="container">
-    <h2>Book Anything, Anywhere, Anytime</h2>
-    <p>Find what you need today!</p>
-  </div>
+<style>
+  /* Modern Dashboard Revamp CSS */
+  body {
+      background-color: #f7f9fc;
+  }
+  .modern-header {
+      background: linear-gradient(135deg, #046c9f 0%, #034d71 100%);
+      padding: 30px 20px 45px;
+      color: #fff;
+      position: relative;
+      margin-top: 10px; /* If there's a fixed top navbar */
+      /* -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 50%); */
+      /* mask-image: linear-gradient(to bottom, black 70%, transparent 100%); */
+  }
+  .modern-header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0;
+  }
+  .modern-header p {
+      font-size: 1rem;
+      opacity: 0.9;
+      margin: 5px 0 20px;
+  }
+  
+  .modern-search-container {
+      margin: -25px 20px 20px;
+      position: relative;
+      z-index: 10;
+  }
+  .modern-search-bar {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border-radius: 16px;
+      padding: 8px 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  }
+  .modern-search-bar input {
+      border: none;
+      outline: none;
+      width: 100%;
+      padding: 10px;
+      font-size: 0.95rem;
+  }
+  .modern-search-bar .geo-btn {
+      color: #046c9f;
+      padding: 8px;
+      border-radius: 50%;
+      cursor: pointer;
+      background: #eef9ff;
+  }
+  
+  .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 20px 20px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+  }
+  .section-title a {
+      font-size: 0.85rem;
+      color: #046c9f;
+      text-decoration: none;
+      font-weight: 600;
+  }
+  
+  /* Round Icons Categories */
+  .round-categories {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 0 20px ;
+      gap: 20px 10px;
+  }
+  
+  .round-category-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0;
+      width: 100%;
+  }
+  .round-category-icon {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      transition: all 0.2s ease;
+  }
+  /* Remove the active border box to just show icon */
+  .round-category-item:hover .round-category-icon {
+      transform: scale(1.05);
+  }
+  .round-category-text {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #64748b;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 70px;
+  }
+  
+  /* Popular Services Horizontal List */
+  .popular-services {
+      display: flex;
+      overflow-x: auto;
+      padding: 0 20px 10px;
+      gap: 15px;
+      scrollbar-width: none;
+  }
+  .popular-services::-webkit-scrollbar { display: none; }
+  
+  .popular-card {
+      min-width: 110px;
+      /* background: #ffffff;
+      border: 1px solid #e2e8f0; */
+      border-radius: 16px;
+      padding: 20px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: transform 0.2s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+  }
+  .popular-card:hover {
+      transform: translateY(-2px);
+  }
+  .popular-card img {
+      width: 45px;
+      height: 45px;
+      object-fit: contain;
+  }
+  .popular-card span {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #1e293b;
+      text-align: center;
+      line-height: 1.2;
+  }
+  
+  /* Promo Banner */
+  .promo-banner {
+      margin: 25px 20px;
+      background: linear-gradient(45deg, #046c9f, #ff8e53);
+      border-radius: 20px;
+      padding: 20px;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(255,107,107,0.3);
+  }
+  .promo-content h3 {
+      font-size: 1.2rem;
+      margin: 0 0 5px;
+      font-weight: 800;
+  }
+  .promo-content p {
+      font-size: 0.85rem;
+      margin: 0;
+      opacity: 0.9;
+  }
+  .promo-btn {
+      background: #fff;
+      color: #046c9f;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+  }
+
+  /* Why Choose Us Modern */
+  .modern-why-section {
+      padding: 0 20px 0;
+  }
+  .modern-features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+  }
+  .modern-feature-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      border: 1px solid #f1f5f9;
+  }
+  .modern-feature-card .icon {
+      background: #eef9ff;
+      color: #046c9f;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+  }
+  .modern-feature-card h3 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin: 0;
+      color: #1e293b;
+      line-height: 1.3;
+  }
+  .modern-feature-card p {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin: 0;
+      line-height: 1.4;
+  }
+
+  /* Quality Assured Banner */
+  .modern-quality-banner {
+      margin: 25px 20px;
+      background: linear-gradient(135deg, #046c9f 0%, #5eaccd 100%);
+      border-radius: 20px;
+      padding: 20px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.2);
+  }
+  .modern-quality-icon {
+      background: rgba(255,255,255,0.2);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+  }
+  .modern-quality-text h3 {
+      margin: 0 0 5px;
+      font-size: 1.1rem;
+      font-weight: 800;
+  }
+  .modern-quality-text p {
+      margin: 0;
+      font-size: 0.8rem;
+      opacity: 0.9;
+  }
+
+  /* Testimonials */
+  .modern-testimonials {
+      padding: 0 20px 30px;
+      display: flex;
+      overflow-x: auto;
+      gap: 15px;
+      scrollbar-width: none;
+  }
+  .modern-testimonials::-webkit-scrollbar { display: none; }
+  .modern-testimonial-card {
+      min-width: 280px;
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      border: 1px solid #f1f5f9;
+  }
+  .modern-testimonial-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+  }
+  .modern-avatar {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: #eef9ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #046c9f;
+      font-size: 1.1rem;
+  }
+  .modern-user-info h4 {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #1e293b;
+      font-weight: 700;
+  }
+  .modern-stars {
+      color: #fbbf24;
+      font-size: 0.75rem;
+      margin-top: 4px;
+  }
+  .modern-quote {
+      font-size: 0.85rem;
+      color: #475569;
+      margin: 0;
+      line-height: 1.6;
+      font-style: italic;
+  }
+
+  /* Top Services Card Style (Demo) */
+  .top-services-list {
+      display: flex;
+      overflow-x: auto;
+      padding: 0 20px 20px;
+      gap: 15px;
+      scrollbar-width: none;
+  }
+  .top-services-list::-webkit-scrollbar { display: none; }
+  
+  .top-service-card {
+      min-width: 260px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      border: 1px solid #f1f5f9;
+  }
+  .top-service-image {
+      width: 100%;
+      height: 150px;
+      position: relative;
+  }
+  .top-service-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+  }
+  .discount-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: #ef4444;
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+  }
+  .top-service-body {
+      padding: 15px;
+  }
+  .top-service-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+  }
+  .top-service-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0;
+  }
+  .top-service-price {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #046c9f;
+      margin: 0;
+  }
+  .top-service-subtitle {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin: 0 0 10px;
+  }
+  .top-service-rating-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+  }
+  .rating-badge {
+      background-color: #f0fdf4;
+      color: #16a34a;
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+  }
+  .review-count {
+      font-size: 0.8rem;
+      color: #64748b;
+  }
+  .top-service-footer {
+      border-top: 1px dashed #e2e8f0;
+      padding-top: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: #64748b;
+      line-height: 1.4;
+  }
+  .top-service-footer i {
+      color: #046c9f;
+      margin-top: 2px;
+  }
+</style>
+
+<section class="modern-header" id="home">
+  <h2>Hey, {{ Auth::check() ? Auth::user()->name : 'Guest' }} 👋</h2>
+  <p>What do you need today?</p>
 </section>
- 
-<div class="search-container">
-  <div class="search-bar">
-    <button id="toggleButto" class="toggle-butto">
-      <i class="fas fa-chevron-down"> |</i>
-    </button>
-    <input
-      type="text"
-      id="searchInput"
-      placeholder="Search your city..."
+
+<div class="modern-search-container">
+  <div class="modern-search-bar">
+    <i class="fas fa-search" style="color: #94a3b8; padding: 0 10px;"></i>
+    <input type="text" id="searchInput" value="{{ auth()->check() && auth()->user()->city ? auth()->user()->city : session('user_location', '') }}"
+      placeholder="Search for services or your city..."
       class="search-input"
-      oninput="filterCities()"
-      onclick="toggleCityPopup(); scrollIntoViewSmooth()"
+      onclick="window.location.href='{{ route('explore') }}?focus=search'"
     />
     <span class="geo-btn" onclick="getCurrentLocation()"><i class="fas fa-map-marker-alt"></i></span>
   </div>
+
+  <div id="cityPopup" class="city-popup hidden" style="position: absolute; top: 100%; left: 0; right: 0; z-index: 100; background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-top: 10px;">
+    <div class="popup-header" style="padding: 15px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+      <p style="margin: 0; font-size: 0.9rem; font-weight: 600;">Currently serving cities:</p>
+      <button id="closePopup" class="close-popup" onclick="toggleCityPopup()" style="background: none; border: none; font-size: 1.5rem; color: #64748b; cursor: pointer;">&times;</button>
+    </div>
+    <div class="city-list" id="cityList" style="max-height: 250px; overflow-y: auto; padding: 10px;">
+    </div>
+  </div>
 </div>
 
-<div id="cityPopup" class="city-popup hidden">
-  <div class="popup-header">
-    <p>Currently we are serving in these cities:</p>
-    <button id="closePopup" class="close-popup" onclick="toggleCityPopup()">&times;</button>
+<div class="section-title">
+  <span>Categories</span>
+  <a href="{{ route('explore') }}">See All</a>
+</div>
+
+<div class="round-categories">
+  <!-- Row 1 -->
+  <button class="round-category-item" onclick="window.location.href='{{ route('explore') }}?category=homes'">
+    <div class="round-category-icon" style="background-color: #e8f0fe; color: #1a73e8;"><i class="fas fa-home"></i></div>
+    <div class="round-category-text">Home Ser...</div>
+  </button>
+  <button class="round-category-item" onclick="window.location.href='{{ route('explore') }}?category=cabs'">
+    <div class="round-category-icon" style="background-color: #e6f4ea; color: #34a853;"><i class="fas fa-car"></i></div>
+    <div class="round-category-text">Cabs</div>
+  </button>
+  <button class="round-category-item" onclick="window.location.href='{{ route('explore') }}?category=event'">
+    <div class="round-category-icon" style="background-color: #f3e8fc; color: #9c27b0;"><i class="far fa-calendar-alt"></i></div>
+    <div class="round-category-text">Events</div>
+  </button>
+  <button class="round-category-item" onclick="window.location.href='{{ route('explore') }}?category=Rental'">
+    <div class="round-category-icon" style="background-color: #fef0e6; color: #ff9800;"><i class="fas fa-bed"></i></div>
+    <div class="round-category-text">Hotels</div>
+  </button>
+
+  <!-- Row 2 -->
+  <button class="round-category-item" onclick="window.location.href='{{ route('explore') }}?category=Rental'">
+    <div class="round-category-icon" style="background-color: #fce8e6; color: #e53935;"><i class="fas fa-building"></i></div>
+    <div class="round-category-text">Rentals</div>
+  </button>
+  <button class="round-category-item" onclick="window.location.href='{{ route('explore') }}?category=Working'">
+    <div class="round-category-icon" style="background-color: #e0f7fa; color: #00bcd4;"><i class="fas fa-user-cog"></i></div>
+    <div class="round-category-text">Professio...</div>
+  </button>
+  <button class="round-category-item" onclick="window.location.href='{{ route('explore') }}?category=Working'">
+    <div class="round-category-icon" style="background-color: #fce4ec; color: #e91e63;"><i class="fas fa-spa"></i></div>
+    <div class="round-category-text">Beauty</div>
+  </button>
+  <button class="round-category-item" onclick="window.location.href='{{ route('explore') }}?category=event'">
+    <div class="round-category-icon" style="background-color: #fff3e0; color: #ff5722;"><i class="fas fa-utensils"></i></div>
+    <div class="round-category-text">Catering</div>
+  </button>
+</div>
+
+<div class="section-title">
+  <span>Popular Sub Categories</span>
+</div>
+
+<div class="popular-services">
+  <div class="popular-card service-box" data-target="Plumber">
+    <img src="{{ asset('image/plumber.png') }}" alt="Plumber">
+    <span>Plumber</span>
   </div>
-  <div class="city-list" id="cityList">
-      
+  <div class="popular-card service-box" data-target="Electrician">
+    <img src="{{ asset('image/electrician.png') }}" alt="Electrician">
+    <span>Electrician</span>
+  </div>
+  <div class="popular-card service-box" data-target="Cleaner">
+    <img src="{{ asset('image/Cleaner.png') }}" alt="Cleaner">
+    <span>Cleaner</span>
+  </div>
+  <div class="popular-card service-box" data-target="Painter">
+    <img src="{{ asset('image/Painter.png') }}" alt="Painter">
+    <span>Painter</span>
   </div>
 </div>
 
-<script>
-  function toggleCityPopup() {
-    const cityPopup = document.getElementById('cityPopup');
-    cityPopup.classList.toggle('hidden');
-  }
-
-  function filterCities() {
-    const input = document.getElementById('searchInput').value.toLowerCase();
-    const cityItems = document.querySelectorAll('.city-item');
-    cityItems.forEach(item => {
-      const cityName = item.getAttribute('data-city').toLowerCase();
-      if (cityName.includes(input)) {
-        item.style.display = 'flex';
-      } else {
-        item.style.display = 'none';
-      }
-    });
-  }
-
-  function selectCity(city) {
-    document.getElementById('searchInput').value = city;
-    toggleCityPopup();
-  }
-
-  function scrollIntoViewSmooth() {
-    document.getElementById('searchInput').scrollIntoView({ behavior: "smooth",  block: "start" });
-  }
-</script>
-    
-  <div class="service-categories">
-    <div class="scroll-container">
-      <button onclick="selectCategory(this, 'homes')" class="category-btn active">Home services</button>
-      <button onclick="selectCategory(this, 'event')" class="category-btn">Event</button>
-      <button onclick="selectCategory(this, 'cabs')" class="category-btn">Cabs</button>
-      <button onclick="selectCategory(this, 'Rental')" class="category-btn">Rental</button>
-      <button onclick="selectCategory(this, 'Working')" class="category-btn">Working Professionals</button>
-      <!-- <button onclick="selectCategory(this, 'Health')" class="category-btn">Health & Wellness</button> -->
-    </div>
+<div class="promo-banner">
+  <div class="promo-content">
+    <h3>20% OFF</h3>
+    <p>On your first booking</p>
   </div>
- 
-  
-    
-<!-- Service Grids -->
-<div id="categories-container">
- 
-  <!-- Home Service Grid -->
-  <div class="service-grid" id="homes" data-category="homes">
-      <div class="service-box" data-target="Plumber"><img src="image/plumber.avif" alt="Plumber"><span>Plumber</span></div>
-      <div class="service-box" data-target="Electrician"><img src="image/electition.webp" alt="Electrician"><span>Electrician</span></div>
-      <div class="service-box" data-target="Cleaner"><img src="image/cleaner.jpg" alt="Cleaner"><span>Cleaner</span></div>
-      <div class="service-box" data-target="Gardener"><img src="image/gardener.jpeg" alt="Gardener"><span>Gardener</span></div>
-      <div class="service-box" data-target="Painter"><img src="image/Painter.jpg" alt="Painter"><span>Painter</span></div>
-      <div class="service-box" data-target="Carpenter"><img src="image/Carpenter.jpg" alt="Repairer"><span>Carpenter</span></div>
-      <div class="service-box" data-target="Pest"><img src="image/Pest Control.jpeg" alt="Repairer"><span>Pest Control</span></div>
-      <div class="service-box" data-target="Tution"><img src="image/teacher.jpeg" alt="Repairer"><span>Tution Teacher</span></div>
-      <div class="service-box" data-target="Mineral" ><img src="image/Mineral.jpg" alt="Mineral"><span>Mineral Water</span></div>
-  </div>
-
-  <!-- Event Grid -->
-  <div class="service-grid hidden" id="event" data-category="event">
-    <div class="service-box" data-target="dj" ><img src="image/sound.jpeg" alt="DJ"><span>Sound</span></div>
-    <div class="service-box" data-target="Photographer" ><img src="image/photo.jpeg" alt="Photographer"><span>Photographer</span></div>
-    <div class="service-box" data-target="Catering" ><img src="image/waiter.jpeg" alt="Catering"><span>Catering</span></div>
-    <div class="service-box" data-target="Decorator" ><img src="image/decoration.jpeg" alt="Decorator"><span>Decorator</span></div>
-    <div class="service-box" data-target="Tent" ><img src="image/tent.jpeg" alt="Tent"><span>Tent House</span></div>
-    <div class="service-box" data-target="Chef" ><img src="image/halwai.jpeg" alt="Sound"><span>Chef</span></div>
-    <div class="service-box" data-target="Jaimala" ><img src="image/JaiMala Stage.jpg" alt="Jaimala"><span>Jaimala Stage</span></div>
-    <div class="service-box" data-target="Mineral" ><img src="image/Mineral.jpg" alt="Mineral"><span>Mineral Water</span></div>
-    <div class="service-box" data-target="Vehicles" ><img src="image/car.jpeg" alt="Vehicles"><span>Vehicles</span></div>
+  <button class="promo-btn" onclick="window.location.href='{{ route('explore') }}'">Book Now</button>
 </div>
 
-  <!-- Cabs Grid -->
-  <div class="service-grid hidden" id="cabs" data-category="cabs">
-    <div class="service-box" data-target="Bike"><img src="image/Bike.webp" alt="Bike"><span>Bike</span></div>
-    <div class="service-box" data-target="Toto"><img src="image/Toto.avif" alt="Van"><span>Toto</span></div>
-    <div class="service-box" data-target="Auto"><img src="image/Auto.webp" alt="Auto"><span>Auto</span></div>
-    <div class="service-box" data-target="Car"><img src="image/car.jpg" alt="Car"><span>Car</span></div>
-    <div class="service-box" data-target="Scorpio"><img src="image/SUV.jpg" alt="Scorpio"><span>SUV</span></div>
-    <div class="service-box" data-target="Pikup"><img src="image/Pikup.jpg" alt="Van"><span>Pikup</span></div>
-    <div class="service-box" data-target="Tractor"><img src="image/Tractor.webp" alt="Van"><span>Tractor</span></div>
-    <div class="service-box" data-target="Bus"><img src="image/Bus.webp" alt="Van"><span>Bus</span></div>
-    <div class="service-box" data-target="Other"><img src="image/Taxi.jpg" alt="Taxi"><span>Other</span></div>  
+
+<div class="section-title">
+  <span>Most Booked Services</span>
+</div>
+
+<!-- Top Services Demo Cards -->
+<div class="top-services-list">
+  <div class="top-service-card" onclick="window.location.href='{{ route('explore') }}?service=Electrician'" style="cursor:pointer;">
+    <div class="top-service-image">
+      <span class="discount-badge">FLAT 20% OFF</span>
+      <img src="{{ asset('image/car.jpg') }}" alt="Electrician">
+    </div>
+    <div class="top-service-body">
+      <div class="top-service-header">
+        <h4 class="top-service-title">Electrician</h4>
+        <p class="top-service-price">₹500</p>
+      </div>
+      <p class="top-service-subtitle">Khanna, Ludhiana</p>
+      <div class="top-service-rating-row">
+        <span class="rating-badge">5.0 <i class="fas fa-star"></i></span>
+        <span class="review-count">• 120 Reviews</span>
+      </div>
+      <div class="top-service-footer">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>GT Road Khanna, Kulesra, Ludhiana - 141401</span>
+      </div>
+    </div>
   </div>
 
-   <!-- Hotels Grid -->
-  <div class="service-grid hidden" id="Rental" data-category="Rental">
-      <div class="service-box" data-target="3BHK"><img src="image/5-star.jpg" alt="5-star"><span>3BHK</span></div>
-      <div class="service-box" data-target="2BHK"><img src="image/4-star.webp" alt="4-star"><span>2BHK</span></div>
-      <div class="service-box" data-target="1BHK"><img src="image/3-star.webp" alt="3-star"><span>1BHK</span></div>
-       <div class="service-box" data-target="Guesthouse"><img src="image/Guesthouse.jpg" alt="Guesthouse"><span>Guesthouse</span></div>
-      <div class="service-box" data-target="PG"><img src="image/PG.jpg" alt="Hostel"><span>PG</span></div>
-       <div class="service-box" data-target="Others"><img src="image/othe.jpg" alt="Hostel"><span>Others</span></div>
-  </div>  
-
-  <!-- Working Professional Grid -->
-  <div class="service-grid hidden" id="Working" data-category="Working">
-    <div class="service-box" data-target="Health"><img src="image/HealthWellness.png" alt="Health and Wellness"><span>Health and Wellness</span></div>
-    <div class="service-box" data-target="Tution"><img src="image/Tutors and Educators.jpg" alt="Tutors and Educators"><span>Tutors and Educators</span></div>
-    <div class="service-box" data-target="Technology"><img src="image/Technology Services.jpg" alt="Technology Services"><span>Technology Services</span></div>
-    <div class="service-box" data-target="Legal"><img src="image/Legal and Financial Services.webp" alt="egal and Financial Services"><span>Legal and Finance</span></div>
-    <div class="service-box" data-target="Estate"><img src="image/estate.jpeg" alt="Estate Agent"><span>Estate Agent</span></div>
-    <div class="service-box" data-target="Beauty"><img src="image/bride.jpeg" alt="Beauty and Grooming"><span>Beauty and Grooming</span></div>
-    <div class="service-box" data-target="massage"><img src="image/massage.webp" alt="Massage & Spa"><span>Massage & Spa</span></div>
-    <div class="service-box" data-target="Tractor"><img src="image/yoga.jpeg" alt="Yoga & Trainer"><span>Yoga & Trainer</span></div>
-    <div class="service-box" data-target="Tattoo"><img src="image/Tattoo.webp" alt="Tattoo Artists"><span>Tattoo Artists</span></div>
+  <div class="top-service-card" onclick="window.location.href='{{ route('explore') }}?service=Cleaner'" style="cursor:pointer;">
+    <div class="top-service-image">
+      <span class="discount-badge">FLAT 15% OFF</span>
+      <img src="{{ asset('image/drivers.jpg') }}" alt="Deep Cleaning">
+    </div>
+    <div class="top-service-body">
+      <div class="top-service-header">
+        <h4 class="top-service-title">Deep Cleaning</h4>
+        <p class="top-service-price">₹1200</p>
+      </div>
+      <p class="top-service-subtitle">Andheri, Mumbai</p>
+      <div class="top-service-rating-row">
+        <span class="rating-badge">4.8 <i class="fas fa-star"></i></span>
+        <span class="review-count">• 85 Reviews</span>
+      </div>
+      <div class="top-service-footer">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>Lokhandwala Complex, Andheri East - 400053</span>
+      </div>
+    </div>
   </div>
- 
-@include('layouts.services')
-<section class="why-bookingyard">
-    <h2>Why BookingYard?</h2>
+</div>
   
-    <div class="feature">
-      <div class="feature-icon"><i class="fas fa-cog"></i></div>
-      <div class="feature-text">
-        <h3>Service Available within 30 Min</h3>
-        <p>Quick response time for all your booking needs.</p>
-      </div>
-    </div>
-    <div class="feature">
-      <div class="feature-icon"><i class="fas fa-check-circle"></i></div>
-      <div class="feature-text">
-        <h3>No Hidden Charges</h3>
-        <p>Transparent pricing with no surprises.</p>
-      </div>
-    </div>
-  
-    <div class="feature">
-      <div class="feature-icon"><i class="fas fa-phone-volume"></i></div>
-      <div class="feature-text">
-        <h3>Direct Deal with Vendors</h3>
-        <p>No intermediaries, ensuring direct and fair interactions.</p>
-      </div>
-    </div>
-  
-    <div class="feature">
-      <div class="feature-icon"><i class="fas fa-desktop"></i></div>
-      <div class="feature-text">
-        <h3>Easy Interface</h3>
-        <p>User-friendly design for a seamless booking experience.</p>
-      </div>
-    </div>
-  
-    <div class="feature">
-      <div class="feature-icon"><i class="fas fa-medkit"></i></div>
-      <div class="feature-text">
-        <h3>Health Insurance for Vendors</h3>
-        <p>We care for our vendors' well-being and security.</p>
-      </div>
-    </div>
-  
-    <div class="feature">
-      <div class="feature-icon"><i class="fas fa-arrow-up"></i></div>
-      <div class="feature-text">
-        <h3>Empowering Local Businesses</h3>
-        <p>Supporting and promoting local vendors and services.</p>
-      </div>
-    </div>
+<div class="section-title" style="margin-top: 30px;">
+  <span>Why BookingYard?</span>
+</div>
 
-    
-  </section>
- 
-  <section class="quality-assured">
-    <div class="quality-icon">
-      <img src="image/service.png" alt="Quality Assured" />
+<section class="modern-why-section">
+  <div class="modern-features-grid">
+    <div class="modern-feature-card">
+      <div class="icon"><i class="fas fa-bolt"></i></div>
+      <h3>30 Min Service</h3>
+      <p>Quick response for all needs.</p>
     </div>
-    <h3>100% Quality Assured</h3>
-    <p>If you are not satisfied with our work, we offer a 6-hour warranty.</p>
-  </section>
-   
-<section class="testimonials" id="testimonials">
-    <div class="container">
-        <h2 style="color: #046c9f;">What Our Users Say</h2>
-        <blockquote>
-            <p>"An amazing platform! I found exactly what I needed."</p>
-            <cite>- Happy Customer</cite>
-        </blockquote>
+    <div class="modern-feature-card">
+      <div class="icon"><i class="fas fa-shield-alt"></i></div>
+      <h3>No Hidden Charges</h3>
+      <p>Transparent pricing, no surprises.</p>
     </div>
+    <div class="modern-feature-card">
+      <div class="icon"><i class="fas fa-handshake"></i></div>
+      <h3>Direct Deal</h3>
+      <p>No intermediaries, fair interactions.</p>
+    </div>
+    <div class="modern-feature-card">
+      <div class="icon"><i class="fas fa-heart"></i></div>
+      <h3>Health Insurance</h3>
+      <p>We care for vendor well-being.</p>
+    </div>
+  </div>
 </section>
 
-  <script>
-    // Render vendor cards dynamically from API
-    function slugify(s){ return (s||'').toString().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+<div class="modern-quality-banner">
+  <div class="modern-quality-icon"><i class="fas fa-medal"></i></div>
+  <div class="modern-quality-text">
+    <h3>100% Quality Assured</h3>
+    <p>Not satisfied? We offer a 6-hour warranty.</p>
+  </div>
+</div>
 
-    async function loadVendorsForSelection() {
-      try{
-        const city = document.getElementById('searchInput')?.value || '';
-        const activeBtn = document.querySelector('.service-categories .category-btn.active');
-        const categoryMap = { homes: 'Home Service', event: 'Event', cabs: 'Cabs', hotels: 'Hotels', Working: 'Working Professionals' };
-        const categoryKey = activeBtn ? activeBtn.getAttribute('onclick')?.match(/'(.*?)'/)?.[1] : '';
-        const category = categoryMap[categoryKey] || '';
-        // Find selected service type from visible grid click context (fallback none)
-        // prefer explicit last click, otherwise fall back to query params
-        const urlParams = new URLSearchParams(window.location.search);
-        const selectedTarget = window._lastServiceTarget || (urlParams.get('service') || '');
-        const params = new URLSearchParams();
-        if (selectedTarget) params.append('service', selectedTarget);
-        if (category) params.append('category', category);
-        if (city) params.append('city', city);
-        const url = `{{ route('vendors.search') }}?${params.toString()}`;
-        console.log('[loadVendorsForSelection] fetching', url);
-        const res = await fetch(url);
-        const list = await res.json();
-        console.log('[loadVendorsForSelection] got', list && list.length ? list.length : 0, 'vendors');
-        // Add any vendor cities to the city popup so newly-created vendor cities are searchable
-        try {
-          (function addCitiesToPopup(vendors){
-            const cityListEl = document.getElementById('cityList');
-            if (!cityListEl || !vendors || !vendors.length) return;
-            vendors.forEach(v => {
-              const c = (v.city||'').toString().trim();
-              if (!c) return;
-              const exists = Array.from(cityListEl.querySelectorAll('.city-item')).some(el => (el.getAttribute('data-city')||'').toLowerCase() === c.toLowerCase());
-              if (!exists) {
-                const div = document.createElement('div');
-                div.className = 'city-item';
-                div.setAttribute('data-city', c);
-                // attach click handler to select city
-                div.setAttribute('onclick', `selectCity('${c.replace(/'/g, "\\'")}')`);
-                div.innerHTML = `<i class="fas fa-city city-icon"></i><div class="city-name-container">${c}</div>`;
-                cityListEl.appendChild(div);
-              }
-            });
-          })(list);
-        } catch(e){ /* noop */ }
-        const container = document.getElementById('dynamic-services-container');
-        // Keep existing static cards; append DB results at top
-        const mountId = 'db-vendors';
-        let mount = document.getElementById(mountId);
-        if (!mount){ mount = document.createElement('div'); mount.id = mountId; /* make wrapper transparent to grid */ mount.style.display = 'contents'; container.prepend(mount); }
-        if (!list || !Array.isArray(list) || list.length === 0) {
-          mount.innerHTML = `<div class="no-results" style="padding:16px;background:#fff3f2;border:1px solid #fee2e2;border-radius:8px;margin:8px 0;color:#991b1b">No vendors found.</div>`;
-        } else {
-          mount.innerHTML = list.map(v => {
-          const svc = v.service || v.title || '';
-          const svcSlug = slugify(svc);
-          return `
-          <div class="service-card" onclick="showButtons(this)" data-card-id="vendor-${v.id}" data-address="${(v.address||'').replace(/"/g,'&quot;')}" data-contact="${(v.contact||'').replace(/"/g,'&quot;')}" data-services='${JSON.stringify(v.services||[]).replace(/'/g,'&#39;') }' data-service-slug="${svcSlug}" data-city="${(v.city||'').replace(/"/g,'&quot;')}">
-            <div class="service-image">
-              <img src="${v.image || '{{ asset('image/Booking.jpg') }}'}" alt="${v.title}">
-              ${v.discount ? `<span class="offer-tag">Flat ${v.discount}% OFF</span>` : ''}
-            </div>
-            <div class="service-details">
-              <h3>${v.title}</h3>
-              ${v.subtitle ? `<p id="fad">${v.subtitle}</p>` : ''}
-              <p class="location">${[v.area, v.city].filter(Boolean).join(', ')}</p>
-              <div class="service-meta">
-                <span class="rating">${(Number(v.rating) || 0).toFixed(1)}★</span>
-                ${v.price ? `<span class="price">₹${Number(v.price)}</span>` : ''}
-                <span class="distance"><i class="fas fa-map-marker-alt"></i>Nearby</span>
-              </div>
-            </div>
-            <div class="details hidden"></div>
-          </div>
-        `}).join('');
+<div class="section-title">
+  <span>What Our Users Say</span>
+</div>
 
-        // Ensure image fallback and keep service slug dataset for filtering
-        mount.querySelectorAll('.service-card').forEach(el => {
-          const img = el.querySelector('img');
-          if (img && (!img.getAttribute('src') || img.getAttribute('src') === '')) {
-            img.setAttribute('src', '{{ asset('image/Booking.jpg') }}');
-          }
-        });
-        }
-        return list || [];
-      } catch(err){ console.error('Failed to load vendors', err); return []; }
-    }
+<section class="modern-testimonials">
+  <div class="modern-testimonial-card">
+    <div class="modern-testimonial-header">
+      <div class="modern-avatar">HC</div>
+      <div class="modern-user-info">
+        <h4>Happy Customer</h4>
+        <div class="modern-stars">
+          <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+        </div>
+      </div>
+    </div>
+    <p class="modern-quote">"An amazing platform! I found exactly what I needed in just a few clicks. The vendor was professional and on time."</p>
+  </div>
+  
+  <div class="modern-testimonial-card">
+    <div class="modern-testimonial-header">
+      <div class="modern-avatar">RS</div>
+      <div class="modern-user-info">
+        <h4>Rahul Sharma</h4>
+        <div class="modern-stars">
+          <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+        </div>
+      </div>
+    </div>
+    <p class="modern-quote">"Loved the direct dealing feature. No hidden charges and complete transparency. Highly recommend BookingYard."</p>
+  </div>
+</section>
 
-    // Capture which service tile user picked
-    (function hookServiceBoxClicks(){
-      document.querySelectorAll('.service-box').forEach(box => {
-        box.addEventListener('click', () => {
-          window._lastServiceTarget = box.getAttribute('data-target') || '';
-          // Delay to let existing UI update, then load
-          setTimeout(loadVendorsForSelection, 200);
-        });
-      });
-    })();
-
-    // Populate city popup with all vendor cities on load
-    (function populateCityList(){
-      try {
-        const url = `{{ route('vendors.cities') }}`;
-        fetch(url).then(r => r.json()).then(list => {
-          const cityListEl = document.getElementById('cityList');
-          if (!cityListEl || !Array.isArray(list)) return;
-          list.forEach(c => {
-            if (!c) return;
-            const exists = Array.from(cityListEl.querySelectorAll('.city-item')).some(el => (el.getAttribute('data-city')||'').toLowerCase() === c.toLowerCase());
-            if (!exists) {
-              const div = document.createElement('div');
-              div.className = 'city-item';
-              div.setAttribute('data-city', c);
-              div.setAttribute('onclick', `selectCity('${c.replace(/'/g, "\\'")}')`);
-              div.innerHTML = `<i class="fas fa-city city-icon"></i><div class="city-name-container">${c}</div>`;
-              cityListEl.appendChild(div);
-            }
-          });
-        }).catch(()=>{/* noop */});
-      } catch(e) { /* noop */ }
-    })();
-
-    // If page loaded with ?service=... or ?city=... or ?category=..., reflect that in UI and load vendors
-    (function applyUrlPrefill(){
-      const params = new URLSearchParams(window.location.search);
-      const svc = params.get('service');
-      const city = params.get('city');
-      const category = params.get('category');
-      // If page opened with a city that's not yet in the popup, add it so the vendor can find themselves
-      if (city) {
-        try {
-          const cityListEl = document.getElementById('cityList');
-          if (cityListEl) {
-            const found = Array.from(cityListEl.querySelectorAll('.city-item')).some(el => (el.getAttribute('data-city')||'').toLowerCase() === city.toLowerCase());
-            if (!found) {
-              const div = document.createElement('div');
-              div.className = 'city-item';
-              div.setAttribute('data-city', city);
-              div.setAttribute('onclick', `selectCity('${city.replace(/'/g, "\\'")}')`);
-              div.innerHTML = `<i class="fas fa-city city-icon"></i><div class="city-name-container">${city}</div>`;
-              document.getElementById('cityList').appendChild(div);
-            }
-          }
-        } catch(e) { /* noop */ }
-      }
-      if (city && document.getElementById('searchInput')) document.getElementById('searchInput').value = city;
-      if (svc) {
-        // try to find a matching service-box and simulate a click to highlight UI
-        const boxes = Array.from(document.querySelectorAll('.service-box'));
-        const match = boxes.find(b => (b.getAttribute('data-target')||'').toLowerCase() === svc.toLowerCase() || (b.textContent||'').toLowerCase().includes(svc.toLowerCase()));
-        if (match) {
-          match.classList.add('selected');
-          window._lastServiceTarget = match.getAttribute('data-target') || '';
-        } else {
-          window._lastServiceTarget = svc;
-        }
-      }
-      if (category) {
-        // click the matching category button if available
-        const catMap = { 'home service':'homes','event':'event','cabs':'cabs','hotels':'hotels','working professionals':'Working' };
-        const key = (category||'').toString().toLowerCase();
-        const elemId = catMap[key];
-        if (elemId) {
-          const btn = Array.from(document.querySelectorAll('.service-categories .category-btn')).find(b => b.getAttribute('onclick')?.includes(elemId));
-          if (btn) btn.classList.add('active');
-        }
-      }
-      if (svc || city || category) setTimeout(loadVendorsForSelection, 300);
-    })();
-
-    // Also reload when city is picked/changed or category changes
-    const si = document.getElementById('searchInput');
-    if (si) si.addEventListener('change', () => setTimeout(loadVendorsForSelection, 200));
-
-    // Hook category buttons
-    document.querySelectorAll('.service-categories .category-btn').forEach(btn => {
-      btn.addEventListener('click', () => setTimeout(loadVendorsForSelection, 200));
-    });
-
-    // Initial try: disabled to avoid showing all services by default
-    // Services will load only after the user selects a service, city, or uses the search input.
-    // document.addEventListener('DOMContentLoaded', () => setTimeout(loadVendorsForSelection, 500));
-  </script>
+  
 
   @include('partials.footer-mobile')
   @include('partials.footer-modern')
