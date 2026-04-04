@@ -6,8 +6,42 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\CareerController;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
-Route::get('/', function () { return view('dashboard'); })->name('home');
+Route::get('/', function () { 
+    $bannersStr = \Illuminate\Support\Facades\Storage::disk('public')->get('banners.json');
+    $banners = $bannersStr ? json_decode($bannersStr, true) : [
+        ['title' => 'Mega Sale Live!', 'subtitle' => 'Up to 50% Off on Services', 'bg' => 'bg-1', 'color' => 'text-blue-600', 'btn_text' => 'Book Now', 'link' => '/explore'],
+        ['title' => 'Rent Or Buy', 'subtitle' => 'Top properties near you', 'bg' => 'bg-2', 'color' => 'text-orange-600', 'btn_text' => 'Explore', 'link' => '/one-x-one'],
+        ['title' => '100% Verified', 'subtitle' => 'Trusted professionals on door', 'bg' => 'bg-3', 'color' => 'text-emerald-600', 'btn_text' => 'Hire Now', 'link' => '/explore'],
+    ];
+
+    $categoriesStr = \Illuminate\Support\Facades\Storage::disk('public')->get('categories.json');
+    $categories = $categoriesStr ? json_decode($categoriesStr, true) : [
+        ['title' => 'Plumber', 'link' => 'Plumber', 'image' => 'image/plumber.png'],
+        ['title' => 'Electrician', 'link' => 'Electrician', 'image' => 'image/electrician.png'],
+        ['title' => 'Cleaner', 'link' => 'Cleaner', 'image' => 'image/Cleaner.png'],
+        ['title' => 'Painter', 'link' => 'Painter', 'image' => 'image/Painter.png'],
+    ];
+
+    $servicesStr = \Illuminate\Support\Facades\Storage::disk('public')->get('services.json');
+    $services = $servicesStr ? json_decode($servicesStr, true) : [
+        [
+            'title' => 'Electrician', 'subtitle' => 'Khanna, Ludhiana', 'price' => '₹500',
+            'badge' => 'FLAT 20% OFF', 'rating' => '5.0', 'reviews' => '120 Reviews', 'footer' => 'GT Road Khanna, Kulesra, Ludhiana - 141401',
+            'link' => '/explore?service=Electrician', 'image' => 'image/car.jpg'
+        ],
+        [
+            'title' => 'Deep Cleaning', 'subtitle' => 'Andheri, Mumbai', 'price' => '₹1200',
+            'badge' => 'FLAT 15% OFF', 'rating' => '4.8', 'reviews' => '85 Reviews', 'footer' => 'Lokhandwala Complex, Andheri East - 400053',
+            'link' => '/explore?service=Cleaner', 'image' => 'image/drivers.jpg'
+        ]
+    ];
+
+    return view('dashboard', compact('banners', 'categories', 'services'));
+})->name('home');
 
 // Auth routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -22,9 +56,7 @@ Route::get('/auth/{provider}', [SocialAuthController::class, 'redirect'])->name(
 Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');
 
 // Password reset (built-in) routes
-use Illuminate\Support\Facades\Password;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+
 
 // Request reset link form
 Route::view('/forgot-password', 'auth.forgot-password')->name('password.request');
@@ -95,6 +127,16 @@ Route::middleware('auth')->group(function(){
     // adding a POST fallback prevents a hard 404 while preserving PUT as primary.
     Route::post('/vendor/profile', [VendorController::class, 'update'])->name('vendor.profile.post');
     Route::put('/vendor/profile', [VendorController::class, 'update'])->name('vendor.profile.update');
+
+    // Sell and Rent Items
+    Route::get('/vendor/items/sell', [App\Http\Controllers\ItemController::class, 'createSell'])->name('vendor.items.sell');
+    Route::get('/vendor/items/rent', [App\Http\Controllers\ItemController::class, 'createRent'])->name('vendor.items.rent');
+    Route::post('/vendor/items', [App\Http\Controllers\ItemController::class, 'store'])->name('vendor.items.store');
+    
+    // Edit & delete items
+    Route::get('/vendor/items/{item}/edit', [App\Http\Controllers\ItemController::class, 'edit'])->name('vendor.items.edit');
+    Route::put('/vendor/items/{item}', [App\Http\Controllers\ItemController::class, 'update'])->name('vendor.items.update');
+    Route::delete('/vendor/items/{item}', [App\Http\Controllers\ItemController::class, 'destroy'])->name('vendor.items.destroy');
 });
 
 // Public vendor search API (JSON)
@@ -117,7 +159,25 @@ Route::get('/professional/{id}', [App\Http\Controllers\VendorController::class, 
 
 
 // Simple page for the 1X1 quick-links (opened from mobile footer)
-Route::view('/one-x-one', 'partials.one-x-one')->name('one_x_one');
+Route::get('/one-x-one', function (\Illuminate\Http\Request $request) {
+    $query = \App\Models\Item::with('user')->where('status', 'active');
+    
+    if ($request->filled('q')) {
+        $query->where(function($q) use ($request) {
+            $q->where('title', 'like', '%' . $request->q . '%')
+              ->orWhere('description', 'like', '%' . $request->q . '%')
+              ->orWhere('location_text', 'like', '%' . $request->q . '%')
+              ->orWhere('category', 'like', '%' . $request->q . '%');
+        });
+    }
+
+    if ($request->filled('category')) {
+        $query->where('category', $request->category);
+    }
+
+    $items = $query->latest()->get();
+    return view('partials.one-x-one', compact('items'));
+})->name('one_x_one');
 
 // Expense Management (DB-backed)
 use App\Http\Controllers\ExpenseController;
@@ -157,3 +217,11 @@ Route::post('/bookings', [App\Http\Controllers\BookingController::class, 'store'
 Route::get('/my-bookings', [App\Http\Controllers\BookingController::class, 'userBookings'])->name('my.bookings');
 Route::put('/vendor/bookings/{booking}/status', [App\Http\Controllers\BookingController::class, 'updateStatus'])->name('vendor.bookings.update');
 
+
+// Admin Routes
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/dashboard', [\App\Http\Controllers\AdminController::class, 'index'])->name('admin.dashboard');
+    Route::post('/admin/banners', [\App\Http\Controllers\AdminController::class, 'updateBanners'])->name('admin.banners.update');
+    Route::post('/admin/categories', [\App\Http\Controllers\AdminController::class, 'updateCategories'])->name('admin.categories.update');
+    Route::post('/admin/services', [\App\Http\Controllers\AdminController::class, 'updateServices'])->name('admin.services.update');
+});

@@ -1,0 +1,134 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Vendor;
+use App\Models\Item;
+use Illuminate\Support\Facades\Storage;
+
+class AdminController extends Controller
+{
+    public function index()
+    {
+        if (!auth()->check() || !auth()->user()->is_admin) {
+            abort(403, "Unauthorized access. Only admins can view this page.");
+        }
+
+        $stats = [
+            "users" => User::count(),
+            "vendors" => Vendor::count(),
+            "items" => Item::count(),
+        ];
+
+        $bannersStr = Storage::disk("public")->get("banners.json");
+        $banners = $bannersStr ? json_decode($bannersStr, true) : [
+            ["title" => "Mega Sale Live!", "subtitle" => "Up to 50% Off on Services", "bg" => "bg-1", "color" => "text-blue-600", "btn_text" => "Book Now", "link" => "/explore", "image" => ""],
+            ["title" => "Rent Or Buy", "subtitle" => "Top properties near you", "bg" => "bg-2", "color" => "text-orange-600", "btn_text" => "Explore", "link" => "/one-x-one", "image" => ""],
+            ["title" => "100% Verified", "subtitle" => "Trusted professionals on door", "bg" => "bg-3", "color" => "text-emerald-600", "btn_text" => "Hire Now", "link" => "/explore", "image" => ""],
+        ];
+
+        $categoriesStr = Storage::disk("public")->get("categories.json");
+        $categories = $categoriesStr ? json_decode($categoriesStr, true) : [
+            ["title" => "Plumber", "link" => "Plumber", "image" => "image/plumber.png"],
+            ["title" => "Electrician", "link" => "Electrician", "image" => "image/electrician.png"],
+            ["title" => "Cleaner", "link" => "Cleaner", "image" => "image/Cleaner.png"],
+            ["title" => "Painter", "link" => "Painter", "image" => "image/Painter.png"],
+        ];
+
+        $servicesStr = Storage::disk("public")->get("services.json");
+        $services = $servicesStr ? json_decode($servicesStr, true) : [
+            [
+                "title" => "Electrician", "subtitle" => "Khanna, Ludhiana", "price" => "?500",
+                "badge" => "FLAT 20% OFF", "rating" => "5.0", "reviews" => "120 Reviews", "footer" => "GT Road Khanna, Kulesra, Ludhiana - 141401",
+                "link" => "/explore?service=Electrician", "image" => "image/car.jpg"
+            ],
+            [
+                "title" => "Deep Cleaning", "subtitle" => "Andheri, Mumbai", "price" => "?1200",
+                "badge" => "FLAT 15% OFF", "rating" => "4.8", "reviews" => "85 Reviews", "footer" => "Lokhandwala Complex, Andheri East - 400053",
+                "link" => "/explore?service=Cleaner", "image" => "image/drivers.jpg"
+            ]
+        ];
+
+        return view("admin.dashboard", compact("stats", "banners", "categories", "services"));
+    }
+
+    public function updateBanners(Request $request)
+    {
+        if (!auth()->check() || !auth()->user()->is_admin) abort(403);
+        $oldBanners = json_decode(Storage::disk("public")->get("banners.json"), true) ?? [];
+        $banners = [];
+        if ($request->has("banners")) {
+            foreach ($request->banners as $index => $data) {
+                $imgPath = $oldBanners[$index]["image"] ?? "";
+                if ($request->hasFile("banners.$index.image_file")) {
+                    $val = $request->file("banners.$index.image_file")->store("banners", "public");
+                    if ($val) $imgPath = $val;
+                }
+                if (!empty($data["title"]) || !empty($imgPath)) {
+                    $banners[] = [
+                        "title" => $data["title"] ?? "", "subtitle" => $data["subtitle"] ?? "",
+                        "bg" => $data["bg"] ?? "bg-1", "color" => $data["color"] ?? "text-blue-600",
+                        "btn_text" => $data["btn_text"] ?? "Click Here", "link" => $data["link"] ?? "#",
+                        "image" => $imgPath,
+                    ];
+                }
+            }
+        }
+        Storage::disk("public")->put("banners.json", json_encode($banners, JSON_PRETTY_PRINT));
+        return back()->with("success", "Banners updated successfully!");
+    }
+
+    public function updateCategories(Request $request)
+    {
+        if (!auth()->check() || !auth()->user()->is_admin) abort(403);
+        $oldCategories = json_decode(Storage::disk("public")->get("categories.json"), true) ?? [];
+        $categories = [];
+        if ($request->has("categories")) {
+            foreach ($request->categories as $index => $data) {
+                $imgPath = $oldCategories[$index]["image"] ?? "";
+                if ($request->hasFile("categories.$index.image_file")) {
+                    $val = $request->file("categories.$index.image_file")->store("categories", "public");
+                    if ($val) $imgPath = $val;
+                }
+                if (!empty($data["title"]) || !empty($imgPath)) {
+                    $categories[] = [
+                        "title" => $data["title"] ?? "",
+                        "link" => $data["link"] ?? "",
+                        "image" => $imgPath,
+                    ];
+                }
+            }
+        }
+        Storage::disk("public")->put("categories.json", json_encode($categories, JSON_PRETTY_PRINT));
+        return back()->with("success", "Categories updated successfully!");
+    }
+
+    public function updateServices(Request $request)
+    {
+        if (!auth()->check() || !auth()->user()->is_admin) abort(403);
+        $oldServices = json_decode(Storage::disk("public")->get("services.json"), true) ?? [];
+        $services = [];
+        if ($request->has("services")) {
+            foreach ($request->services as $index => $data) {
+                $imgPath = $oldServices[$index]["image"] ?? "";
+                if ($request->hasFile("services.$index.image_file")) {
+                    $val = $request->file("services.$index.image_file")->store("services", "public");
+                    if ($val) $imgPath = $val;
+                }
+                if (!empty($data["title"]) || !empty($imgPath)) {
+                    $services[] = [
+                        "title" => $data["title"] ?? "", "subtitle" => $data["subtitle"] ?? "",
+                        "price" => $data["price"] ?? "", "badge" => $data["badge"] ?? "",
+                        "rating" => $data["rating"] ?? "", "reviews" => $data["reviews"] ?? "",
+                        "footer" => $data["footer"] ?? "", "link" => $data["link"] ?? "#",
+                        "image" => $imgPath,
+                    ];
+                }
+            }
+        }
+        Storage::disk("public")->put("services.json", json_encode($services, JSON_PRETTY_PRINT));
+        return back()->with("success", "Services updated successfully!");
+    }
+}

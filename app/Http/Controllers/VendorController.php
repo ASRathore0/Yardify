@@ -113,7 +113,12 @@ class VendorController extends Controller
             ->with(['services','bookings'])
             ->latest()
             ->get();
-        return view('vendor/services', compact('vendors'));
+            
+        $items = \App\Models\Item::where('user_id', $request->user()->id)
+            ->latest()
+            ->get();
+            
+        return view('vendor/services', compact('vendors', 'items'));
     }
 
     public function show($id)

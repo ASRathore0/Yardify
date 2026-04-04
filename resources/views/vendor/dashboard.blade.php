@@ -110,7 +110,7 @@
   <!-- 2. Hero Section -->
   <div class="hero-bg">
     <h1>Vendor Dashboard</h1>
-    <div style="opacity:0.9; margin-top:6px;">Manage your business bookings & profile</div>
+    <div style="opacity:0.9; margin-top:6px;">Manage your business, sales, and rentals</div>
   </div>
 
   <!-- 3. Main Grid Content -->
@@ -118,6 +118,11 @@
     
     <!-- LEFT COLUMN: Stats & Controls -->
     <div>
+      @if(session('success'))
+        <div style="background:#dcfce7; color:#15803d; padding:12px; border-radius:8px; margin-bottom:20px; font-weight:600;">
+            <i class="fa-solid fa-check-circle"></i> {{ session('success') }}
+        </div>
+      @endif
       <div class="card">
         <!-- KPI Stats -->
         <div class="kpi-row">
@@ -154,18 +159,32 @@
               <div class="sub-text">Add or edit services</div>
             </div>
           </a>
+          <a href="{{ route('vendor.form') }}" class="action-card">
+            <i class="fa-solid fa-store" style="color:#64748b; font-size:1.4rem;"></i>
+            <div>
+              <div class="main-text">Add Business</div>
+              <div class="sub-text">Register a new business</div>
+            </div>
+          </a>
+          <a href="{{ route('vendor.items.sell') }}" class="action-card">
+            <i class="fa-solid fa-tag" style="color:#10b981; font-size:1.4rem;"></i>
+            <div>
+              <div class="main-text">Sell an Item</div>
+              <div class="sub-text">List a product for sale</div>
+            </div>
+          </a>
+          <a href="{{ route('vendor.items.rent') }}" class="action-card">
+            <i class="fa-solid fa-key" style="color:#f59e0b; font-size:1.4rem;"></i>
+            <div>
+              <div class="main-text">Rent an Item</div>
+              <div class="sub-text">List an item for rent</div>
+            </div>
+          </a>
           <a href="{{ route('vendor.transactions') }}" class="action-card">
             <i class="fa-solid fa-file-invoice-dollar" style="color:#64748b; font-size:1.4rem;"></i>
             <div>
               <div class="main-text">Transactions</div>
               <div class="sub-text">Check earnings</div>
-            </div>
-          </a>
-          <a href="{{ route('vendor.form') }}" class="action-card">
-            <i class="fa-solid fa-store" style="color:#64748b; font-size:1.4rem;"></i>
-            <div>
-              <div class="main-text">Add Business</div>
-              <div class="sub-text">Add another existing Business</div>
             </div>
           </a>
         </div>
@@ -241,7 +260,39 @@
           <a href="{{ route('vendor.form') }}" style="display:inline-block; background:var(--brand); color:#fff; padding:8px 16px; border-radius:8px; font-size:0.9rem; font-weight:600;">Create Profile</a>
         </div>
       @endif
-    </div>
+
+        <!-- User Items for Sale / Rent -->
+        @php
+          $userItems = auth()->user()->items ?? collect();
+        @endphp
+        
+        @if($userItems->count() > 0)
+          <div style="margin-top: 24px;">
+            <h3 style="margin-top:0; margin-bottom:12px; font-size:1.2rem; color:var(--text-main);">My Listings (Sell/Rent)</h3>
+            <div style="display:grid;gap:12px;">
+              @foreach($userItems as $item)
+                <div class="card" style="display:flex; padding:12px; gap:12px; align-items:center;">
+                  @if($item->image_path && count($item->image_path) > 0)
+                    <img src="{{ asset('storage/'.$item->image_path[0]) }}" style="width:70px; height:70px; border-radius:8px; object-fit:cover;">
+                  @else
+                    <div style="width:70px; height:70px; border-radius:8px; background:#e2e8f0; display:flex; align-items:center; justify-content:center; color:#94a3b8;">
+                      <i class="fa-solid fa-image"></i>
+                    </div>
+                  @endif
+                  <div style="flex:1;">
+                    <div style="display:flex; justify-content:space-between;">
+                      <div style="font-weight:700; font-size:1rem; color:var(--text-main);">{{ $item->title }}</div>
+                      <span style="font-size:0.75rem; padding:2px 8px; border-radius:4px; font-weight:600; {{ $item->type == 'sell' ? 'background:#d1fae5; color:#059669;' : 'background:#fef3c7; color:#d97706;' }}">{{ ucfirst($item->type) }}</span>
+                    </div>
+                    <div style="color:var(--brand); font-weight:700; font-size:0.95rem; margin-top:4px;">₹{{ number_format($item->price, 2) }}</div>
+                    <div style="color:var(--text-muted); font-size:0.8rem; margin-top:4px;">{{ $item->category }} &bull; {{ $item->city }}</div>
+                  </div>
+                </div>
+              @endforeach
+            </div>
+          </div>
+        @endif
+      </div>
 
   </div>
 </body>

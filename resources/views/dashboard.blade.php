@@ -485,11 +485,112 @@
       color: #046c9f;
       margin-top: 2px;
   }
+  
+  /* Auto-playing Ad Slider Styles */
+  .ad-slider-container {
+      position: relative;
+      overflow: hidden;
+      margin: 0 20px 20px;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      height: 180px;
+  }
+  .ad-slider {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  .ad-slide {
+      min-width: 100%;
+      height: 100%;
+      position: relative;
+      background-color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
+  .ad-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+  }
+  /* Refined Gradients */
+  .ad-slide.bg-1 { background: linear-gradient(135deg, #0e7490 0%, #38bdf8 100%); }
+  .ad-slide.bg-2 { background: linear-gradient(135deg, #ea580c 0%, #fbbf24 100%); }
+  .ad-slide.bg-3 { background: linear-gradient(135deg, #047857 0%, #34d399 100%); }
+  
+  .ad-slide-content {
+      position: absolute;
+      left: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #fff;
+      max-width: 70%;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  }
+  .ad-slide-content h3 {
+      font-size: 1.55rem;
+      line-height: 1.2;
+      margin: 0 0 6px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+  }
+  .ad-slide-content p {
+      margin: 0 0 14px;
+      font-size: 0.95rem;
+      opacity: 0.95;
+      font-weight: 500;
+  }
+  .ad-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-shadow: none;
+  }
+  .ad-btn:active {
+      transform: scale(0.95);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+  .ad-indicators {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      background: rgba(0,0,0,0.2);
+      padding: 4px 8px;
+      border-radius: 12px;
+      backdrop-filter: blur(4px);
+  }
+  .ad-indicators .dot {
+      width: 6px;
+      height: 6px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 50%;
+      transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  .ad-indicators .dot.active {
+      background: rgba(255,255,255,1);
+      width: 18px;
+      border-radius: 4px;
+  }
 </style>
 
 <section class="modern-header" id="home">
   <h2>Hey, {{ Auth::check() ? Auth::user()->name : 'Guest' }} 👋</h2>
-  <p>What do you need today?</p>
+  <p>Find services, buy & sell items, or rent what you need!</p>
 </section>
 
 <div class="modern-search-container">
@@ -511,6 +612,60 @@
     <div class="city-list" id="cityList" style="max-height: 250px; overflow-y: auto; padding: 10px;">
     </div>
   </div>
+</div>
+
+<!-- Professional Ad Slider (Amazon/Flipkart Style) -->
+<div class="ad-slider-container" id="adSliderContainer">
+    <div class="ad-slider" id="adSlider">
+        @foreach($banners as $index => $banner)
+        @php
+            $btnColorMap = [
+                'text-blue-600' => '#046c9f',
+                'text-orange-600' => '#ea580c',
+                'text-emerald-600' => '#059669',
+            ];
+            $btnColor = $btnColorMap[$banner['color'] ?? ''] ?? '#0284c7';
+        @endphp
+        <!-- Slide {{ $index + 1 }} -->
+        <div class="ad-slide {{ empty($banner['image']) ? ($banner['bg'] ?? 'bg-1') : '' }}">
+            
+            @if(!empty($banner['image']))
+                <img src="{{ asset('storage/' . $banner['image']) }}" alt="{{ $banner['title'] ?? 'Ad Banner' }}" style="position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; z-index: 1; border-radius: 16px;">
+                <!-- Subtle dark overlay to make text readable -->
+                <div style="position: absolute; inset: 0; background: linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 80%, transparent 100%); z-index: 2; border-radius:16px;"></div>
+            @endif
+
+            <div class="ad-slide-content" style="z-index: 3;">
+                <h3>{{ $banner['title'] ?? '' }}</h3>
+                <p>{{ $banner['subtitle'] ?? '' }}</p>
+                <div class="ad-btn" style="color: {{ $btnColor }};" onclick="window.location.href='{{ url($banner['link'] ?? '#') }}'">
+                    {{ $banner['btn_text'] ?? 'Explore' }} <i class="fas fa-chevron-right" style="margin-left: 6px; font-size: 0.6rem;"></i>
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
+    <div class="ad-indicators" id="adIndicators">
+        @foreach($banners as $index => $banner)
+            <span class="dot {{ $index === 0 ? 'active' : '' }}"></span>
+        @endforeach
+    </div>
+</div>
+
+<!-- Hero Actions -->
+<div style="display:flex; justify-content: space-between; padding: 0 20px 20px; gap: 12px;">
+    <button onclick="window.location.href='{{ route('explore') }}'" style="flex:1; background: #e0f7fa; color: #00838f; border:none; padding:16px 10px; border-radius:16px; font-weight:800; display:flex; flex-direction:column; align-items:center; gap:10px; cursor:pointer; box-shadow:0 4px 10px rgba(0,131,143,0.1); transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+        <div style="background:#fff; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.05);"><i class="fas fa-tools" style="font-size:1.3rem;"></i></div>
+        <span style="font-size:0.8rem; line-height:1.2;">Book<br>Services</span>
+    </button>
+    <button onclick="window.location.href='{{ route('one_x_one') }}'" style="flex:1; background: #e8f5e9; color: #2e7d32; border:none; padding:16px 10px; border-radius:16px; font-weight:800; display:flex; flex-direction:column; align-items:center; gap:10px; cursor:pointer; box-shadow:0 4px 10px rgba(46,125,50,0.1); transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+        <div style="background:#fff; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.05);"><i class="fas fa-shopping-bag" style="font-size:1.3rem;"></i></div>
+        <span style="font-size:0.8rem; line-height:1.2;">Buy &<br>Sell</span>
+    </button>
+    <button onclick="window.location.href='{{ route('one_x_one') }}?category=rent'" style="flex:1; background: #fff3e0; color: #e65100; border:none; padding:16px 10px; border-radius:16px; font-weight:800; display:flex; flex-direction:column; align-items:center; gap:10px; cursor:pointer; box-shadow:0 4px 10px rgba(230,81,0,0.1); transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+        <div style="background:#fff; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.05);"><i class="fas fa-key" style="font-size:1.3rem;"></i></div>
+        <span style="font-size:0.8rem; line-height:1.2;">Rent<br>Things</span>
+    </button>
 </div>
 
 <div class="section-title">
@@ -561,22 +716,20 @@
 </div>
 
 <div class="popular-services">
-  <div class="popular-card service-box" data-target="Plumber">
-    <img src="{{ asset('image/plumber.png') }}" alt="Plumber">
-    <span>Plumber</span>
-  </div>
-  <div class="popular-card service-box" data-target="Electrician">
-    <img src="{{ asset('image/electrician.png') }}" alt="Electrician">
-    <span>Electrician</span>
-  </div>
-  <div class="popular-card service-box" data-target="Cleaner">
-    <img src="{{ asset('image/Cleaner.png') }}" alt="Cleaner">
-    <span>Cleaner</span>
-  </div>
-  <div class="popular-card service-box" data-target="Painter">
-    <img src="{{ asset('image/Painter.png') }}" alt="Painter">
-    <span>Painter</span>
-  </div>
+  @if(isset($categories) && count($categories) > 0)
+    @foreach($categories as $category)
+      <div class="popular-card service-box" data-target="{{ $category['link'] ?? '' }}">
+        <img src="{{ Str::startsWith($category['image'] ?? '', 'image/') ? asset($category['image']) : asset('storage/' . ($category['image'] ?? '')) }}" alt="{{ $category['title'] ?? '' }}">
+        <span>{{ $category['title'] ?? '' }}</span>
+      </div>
+    @endforeach
+  @else
+    <!-- Fallback if missing -->
+    <div class="popular-card service-box" data-target="Plumber">
+      <img src="{{ asset('image/plumber.png') }}" alt="Plumber">
+      <span>Plumber</span>
+    </div>
+  @endif
 </div>
 
 <div class="promo-banner">
@@ -594,49 +747,35 @@
 
 <!-- Top Services Demo Cards -->
 <div class="top-services-list">
-  <div class="top-service-card" onclick="window.location.href='{{ route('explore') }}?service=Electrician'" style="cursor:pointer;">
-    <div class="top-service-image">
-      <span class="discount-badge">FLAT 20% OFF</span>
-      <img src="{{ asset('image/car.jpg') }}" alt="Electrician">
-    </div>
-    <div class="top-service-body">
-      <div class="top-service-header">
-        <h4 class="top-service-title">Electrician</h4>
-        <p class="top-service-price">₹500</p>
+  @if(isset($services) && count($services) > 0)
+    @foreach($services as $service)
+      <div class="top-service-card" onclick="window.location.href='{{ url($service['link'] ?? '#') }}'" style="cursor:pointer;">
+        <div class="top-service-image">
+          @if(!empty($service['badge']))
+            <span class="discount-badge">{{ $service['badge'] }}</span>
+          @endif
+          <img src="{{ Str::startsWith($service['image'] ?? '', 'image/') ? asset($service['image']) : asset('storage/' . ($service['image'] ?? '')) }}" alt="{{ $service['title'] ?? '' }}">
+        </div>
+        <div class="top-service-body">
+          <div class="top-service-header">
+            <h4 class="top-service-title">{{ $service['title'] ?? '' }}</h4>
+            <p class="top-service-price">{{ $service['price'] ?? '' }}</p>
+          </div>
+          <p class="top-service-subtitle">{{ $service['subtitle'] ?? '' }}</p>
+          <div class="top-service-rating-row">
+            <span class="rating-badge">{{ $service['rating'] ?? '0.0' }} <i class="fas fa-star"></i></span>
+            <span class="review-count">• {{ $service['reviews'] ?? '0 Reviews' }}</span>
+          </div>
+          <div class="top-service-footer">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>{{ $service['footer'] ?? '' }}</span>
+          </div>
+        </div>
       </div>
-      <p class="top-service-subtitle">Khanna, Ludhiana</p>
-      <div class="top-service-rating-row">
-        <span class="rating-badge">5.0 <i class="fas fa-star"></i></span>
-        <span class="review-count">• 120 Reviews</span>
-      </div>
-      <div class="top-service-footer">
-        <i class="fas fa-map-marker-alt"></i>
-        <span>GT Road Khanna, Kulesra, Ludhiana - 141401</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="top-service-card" onclick="window.location.href='{{ route('explore') }}?service=Cleaner'" style="cursor:pointer;">
-    <div class="top-service-image">
-      <span class="discount-badge">FLAT 15% OFF</span>
-      <img src="{{ asset('image/drivers.jpg') }}" alt="Deep Cleaning">
-    </div>
-    <div class="top-service-body">
-      <div class="top-service-header">
-        <h4 class="top-service-title">Deep Cleaning</h4>
-        <p class="top-service-price">₹1200</p>
-      </div>
-      <p class="top-service-subtitle">Andheri, Mumbai</p>
-      <div class="top-service-rating-row">
-        <span class="rating-badge">4.8 <i class="fas fa-star"></i></span>
-        <span class="review-count">• 85 Reviews</span>
-      </div>
-      <div class="top-service-footer">
-        <i class="fas fa-map-marker-alt"></i>
-        <span>Lokhandwala Complex, Andheri East - 400053</span>
-      </div>
-    </div>
-  </div>
+    @endforeach
+  @else
+    <p style="padding: 20px; color: #64748b; font-size: 0.9rem;">No services listed yet.</p>
+  @endif
 </div>
   
 <div class="section-title" style="margin-top: 30px;">
@@ -715,6 +854,71 @@
 
 <script src="js/script.js"></script>
 <script src="js/script1.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      // Ad Slider Logic
+      const adSlider = document.getElementById("adSlider");
+      const adContainer = document.getElementById("adSliderContainer");
+      const adDots = document.querySelectorAll("#adIndicators .dot");
+      let currentAdIndex = 0;
+      const totalAdSlides = adDots.length;
+      let adInterval;
+      let startX = 0;
+      let endX = 0;
+
+      function updateAdSlide(index) {
+          adSlider.style.transform = `translateX(-${index * 100}%)`;
+          adDots.forEach(dot => dot.classList.remove("active"));
+          adDots[index].classList.add("active");
+      }
+
+      function nextAdSlide() {
+          currentAdIndex = (currentAdIndex + 1) % totalAdSlides;
+          updateAdSlide(currentAdIndex);
+      }
+
+      function startAdInterval() {
+          adInterval = setInterval(nextAdSlide, 4000); // 4 seconds per slide
+      }
+
+      function resetAdInterval() {
+          clearInterval(adInterval);
+          startAdInterval();
+      }
+
+      // Initialize
+      if (adSlider && totalAdSlides > 0) {
+          startAdInterval();
+      }
+
+      // Swipe support
+      if (adContainer) {
+          adContainer.addEventListener("touchstart", function(e) {
+              startX = e.changedTouches[0].screenX;
+              clearInterval(adInterval);
+          });
+          adContainer.addEventListener("touchend", function(e) {
+              endX = e.changedTouches[0].screenX;
+              handleAdSwipe();
+              startAdInterval();
+          });
+      }
+
+      function handleAdSwipe() {
+          const threshold = 40;
+          if (endX < startX - threshold) {
+              // swipe left (next)
+              currentAdIndex = (currentAdIndex + 1) % totalAdSlides;
+              updateAdSlide(currentAdIndex);
+          } else if (endX > startX + threshold) {
+              // swipe right (prev)
+              currentAdIndex = (currentAdIndex - 1 + totalAdSlides) % totalAdSlides;
+              updateAdSlide(currentAdIndex);
+          }
+      }
+  });
+</script>
 
 <!-- <script>
      document.addEventListener("DOMContentLoaded", function () {

@@ -59,12 +59,12 @@
   <div class="wrap">
     <div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <h2 style="margin:0;">Your Businesses</h2>
-        <!-- <a href="{{ route('vendor.form') }}" class="btn btn-add" style="text-decoration:none;">Add Business</a> -->
+        <h2 style="margin:0;">Your Posts</h2>
       </div>
 
-      @if(isset($vendors) && $vendors->count())
+      @if((isset($vendors) && $vendors->count()) || (isset($items) && $items->count()))
         <div class="card-grid">
+          @if(isset($vendors))
           @foreach($vendors as $vendor)
             <div class="service-card" style="position:relative;">
               <div class="card-menu">
@@ -80,8 +80,9 @@
               </div>
               <div class="service-image">
                 <img src="{{ $vendor->image_url ?? asset('image/Booking.jpg') }}" alt="{{ $vendor->service_name }}">
+                <div style="position:absolute;left:12px;top:12px;background:#0ea5e9;color:#fff;padding:4px 8px;border-radius:6px;font-weight:700;font-size:11px;text-transform:uppercase;">SERVICE</div>
                 @if($vendor->discount_percent)
-                  <div style="position:absolute;left:12px;top:12px;background:#ef4444;color:#fff;padding:6px 10px;border-radius:18px;font-weight:700;font-size:12px;">FLAT {{ $vendor->discount_percent }}% OFF</div>
+                  <div style="position:absolute;left:12px;top:38px;background:#ef4444;color:#fff;padding:6px 10px;border-radius:18px;font-weight:700;font-size:12px;">FLAT {{ $vendor->discount_percent }}% OFF</div>
                 @endif
               </div>
               <div class="service-body">
@@ -116,9 +117,59 @@
               </div>
             </div>
           @endforeach
+          @endif
+          
+          @if(isset($items))
+          @foreach($items as $item)
+            <div class="service-card" style="position:relative;">
+              <div class="card-menu">
+                <div class="menu-button" onclick="this.nextElementSibling.classList.toggle('show')">⋯</div>
+                <div class="menu-dropdown" aria-hidden="true">
+                  <a href="{{ route('vendor.items.edit', $item) }}">Edit</a>
+                  <form method="POST" action="{{ route('vendor.items.destroy', $item) }}" class="confirm-delete" data-vendor-name="{{ addslashes($item->title) }}">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit">Delete</button>
+                  </form>
+                </div>
+              </div>
+              <div class="service-image">
+                @php
+                    $images = $item->image_path;
+                    if(is_string($images)) $images = json_decode($images, true);
+                    $firstImage = (!empty($images) && is_array($images)) ? asset('storage/'.$images[0]) : asset('image/Booking.jpg');
+                @endphp
+                <img src="{{ $firstImage }}" alt="{{ $item->title }}">
+                <div style="position:absolute;left:12px;top:12px;background:{{ $item->type == 'sell' ? '#10b981' : '#f59e0b' }};color:#fff;padding:4px 8px;border-radius:6px;font-weight:700;font-size:11px;text-transform:uppercase;">
+                  {{ $item->type == 'sell' ? 'FOR SALE' : 'FOR RENT' }}
+                </div>
+              </div>
+              <div class="service-body">
+                <div style="display:flex;justify-content:space-between;align-items:start;gap:8px;">
+                  <div>
+                    <div style="font-size:16px;font-weight:800;color:#0f172a">{{ $item->title }}</div>
+                    <div style="font-size:13px;color:#64748b;margin-top:4px;">{{ $item->category }}</div>
+                  </div>
+                  <div style="color:#0ea5e9;font-weight:800;font-size:16px">₹{{ $item->price }}</div>
+                </div>
+
+                <div style="color:#64748b;font-size:13px;">
+                  <i class="fa-solid fa-location-dot" style="color:#0ea5e9;margin-right:8px"></i>
+                  {{ $item->location_text }}, {{ $item->city }}
+                </div>
+
+                @if($item->condition)
+                  <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;">
+                    <div style="font-size:12px;background:#f1f5f9;color:#475569;padding:6px 8px;border-radius:8px;border:1px solid #e2e8f0;">{{ $item->condition }}</div>
+                  </div>
+                @endif
+              </div>
+            </div>
+          @endforeach
+          @endif
         </div>
       @else
-        <div class="card" style="padding:20px;text-align:center;color:#64748b;">No businesses found — create a vendor profile to add your first business.</div>
+        <div class="card" style="padding:20px;text-align:center;color:#64748b;">No posts found — head to dashboard to create a service, sell an item, or rent something out.</div>
       @endif
     </div>
   </div>

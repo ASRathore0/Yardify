@@ -69,4 +69,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\ApiToken::class);
     }
+
+    public function items()
+    {
+        return $this->hasMany(\App\Models\Item::class);
+    }
 }
