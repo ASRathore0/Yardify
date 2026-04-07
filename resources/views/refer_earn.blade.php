@@ -10,7 +10,7 @@
     <meta property="og:type" content="website" />
     <title>Refer & Earn | BookingYard</title>
     
-    <link rel="stylesheet" href="{{ asset('css/stylee.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <style>
