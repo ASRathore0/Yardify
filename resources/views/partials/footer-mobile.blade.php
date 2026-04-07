@@ -1,80 +1,214 @@
-
-
-
+ 
 <style>
-/* Compact fixed mobile footer */
+/* Modern Footer Styles */
+.modern-footer {
+  background-color: #1f2937;
+  color: #ffffff;
+  padding: 40px 20px 20px;
+  font-family: 'Arial', sans-serif;
+  margin-top: 0;
+  width: 100%;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: 100%;
+  margin: 0 auto;
+  gap: 30px;
+  margin-top: 0;
+}
+
+.footer-logo h2 {
+  font-size: 1.8em;
+  color: #046c9f;
+  margin-bottom: 10px;
+}
+
+.footer-logo h2 span {
+  color: #046c9f;
+}
+
+.footer-logo p {
+  font-size: 0.95em;
+  color: #d1d5db;
+  margin-bottom: 15px;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.footer-column h4 {
+  font-size: 1.1em;
+  color: #046c9f;
+  margin-bottom: 15px;
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-column ul li {
+  margin: 8px 0;
+}
+
+.footer-column ul li a {
+  text-decoration: none;
+  color: #d1d5db;
+  transition: color 0.3s;
+}
+
+.footer-column ul li a:hover {
+  color: #04A2C6;
+}
+
+.footer-newsletter h4 {
+  font-size: 1.2em;
+  color: #046c9f;
+  margin-bottom: 10px;
+}
+
+.footer-newsletter p {
+  font-size: 0.9em;
+  color: #d1d5db;
+  margin-bottom: 15px;
+}
+
+.footer-newsletter form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.footer-newsletter form input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  min-width: 150px;
+}
+
+.footer-newsletter form button {
+  padding: 10px 20px;
+  background-color: #046c9f;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  white-space: nowrap;
+}
+
+.footer-newsletter form button:hover {
+  background-color: #04A2C6;
+}
+
+.social-icons {
+  display: flex;
+  gap: 35px;
+  padding-left: 0;
+  margin-top: 15px;
+}
+
+.social-icons a {
+  font-size: 1.8em;
+  color: #d1d5db;
+  transition: color 0.3s;
+}
+
+.social-icons a:hover {
+  color: #046c9f;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding: 15px 0;
+  font-size: 0.9em;
+  color: #d1d5db;
+  border-top: 1px solid #374151;
+  margin-top: 20px;
+}
+
+/* Base responsive tweaks */
+@media (max-width: 768px) {
+  .modern-footer .footer-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .modern-footer .footer-links {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px 0;
+  }
+  .modern-footer .footer-column {
+    width: 48%; /* Forces two columns per row */
+    text-align: left;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .modern-footer .footer-logo,
+  .modern-footer .footer-newsletter {
+    text-align: left;
+  }
+  .social-icons {
+    justify-content: flex-start;
+  }
+}
+
+/* Let's reinstate the fixed mobile footer styles here just in case they were accidentally removed and are still needed by bottom nav */
 #footer {
-	position: fixed;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: #ffffff;
-	border-top: 1px solid #e5e7eb;
-	transition: transform 0.18s ease-in-out;
-	transform: translateY(0);
-	z-index: 1000;
-	/* padding: 6px 8px; */
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  transition: transform 0.18s ease-in-out;
+  transform: translateY(0);
+  z-index: 1000;
 }
 .footer-hidden {
-	transform: translateY(100%) !important;
+  transform: translateY(100%) !important;
 }
-.footer-links {
-	display: flex;
-	justify-content: space-between;
-	gap: 4px;
-	max-width: 720px;
-	margin: 0 auto;
+#footer .footer-links {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between;
+  gap: 4px;
+  max-width: 720px;
+  margin: 0 auto;
 }
 .footer-button {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	padding: 6px 4px;
-	color: #6b7280;
-	text-decoration: none;
-	font-size: 12px;
-	flex: 1 1 0;
-	min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 4px;
+  color: #6b7280;
+  text-decoration: none;
+  font-size: 12px;
+  flex: 1 1 0;
+  min-width: 0;
 }
 .footer-button .icon { font-size: 18px; margin-bottom: 2px; }
 .footer-button span { font-size: 11px; line-height: 1; }
-.footer-button.active {
-	color: #0f172a;
-}
+.footer-button.active { color: #0f172a; }
 
 @media (max-width:420px) {
-	.footer-button .icon { font-size:25px }
-	.footer-button { padding: 5px 2px }
+  .footer-button .icon { font-size:25px; }
+  .footer-button { padding: 5px 2px; }
+  .modern-footer { padding-bottom: 80px; /* Space for the bottom fixed nav */ }
 }
 </style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    let lastScrollTop = 0;
-    const footer = document.getElementById('footer');
-    
-    if (footer) {
-        window.addEventListener('scroll', function() {
-            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            
-            // Only toggle if we've scrolled more than a small threshold to avoid jitter
-            if (Math.abs(scrollTop - lastScrollTop) > 5) {
-                if (scrollTop > lastScrollTop && scrollTop > 60) {
-                    // Scrolling down & past header
-                    footer.classList.add('footer-hidden');
-                } else {
-                    // Scrolling up
-                    footer.classList.remove('footer-hidden');
-                }
-            }
-            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-        }, { passive: true });
-    }
-});
-</script>
-
-
 <footer class="modern-footer">
 	<div class="footer-container">
 		<div class="footer-logo">

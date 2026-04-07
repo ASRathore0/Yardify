@@ -5,7 +5,7 @@
 
 <!-- Load Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="https://cdn.tailwindcss.com"></script>
+@vite(['resources/css/app.css', 'resources/js/app.js'])
 
 <aside id="mainSidebar" 
        class="fixed top-0 left-0 w-[280px] h-screen bg-white text-slate-800 flex flex-col -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl z-[9999] border-r border-slate-100 font-sans">
@@ -158,32 +158,23 @@
 </style>
 
 <script>
-    // Config script for tailwind to match dashboard theme
-    if(window.tailwind) {
-        window.tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: { 50: '#f0f9ff', 100: '#e0f2fe', 500: '#38bdf8', 600: '#0ea5e9', 700: '#0ea5e9', 900: '#0c4a6e' }
-                    }
-                }
-            }
-        }
-    }
-
     // Toggle Sidebar
     window.bookingyardToggleSidebar = function() {
         const sidebar = document.getElementById('mainSidebar');
         const backdrop = document.getElementById('sidebarBackdrop');
-        const isOpen = sidebar.style.transform === 'translateX(0%)';
+        const isOpen = sidebar.style.transform === 'translateX(0%)' || sidebar.classList.contains('translate-x-0');
 
         if (isOpen) {
-            sidebar.style.transform = 'translateX(-100%)';
+            sidebar.style.transform = '';
+            sidebar.classList.remove('translate-x-0');
+            sidebar.classList.add('-translate-x-full');
             backdrop.style.opacity = '0';
             backdrop.style.visibility = 'hidden';
             document.body.style.overflow = '';
         } else {
-            sidebar.style.transform = 'translateX(0%)';
+            sidebar.style.transform = '';
+            sidebar.classList.remove('-translate-x-full');
+            sidebar.classList.add('translate-x-0');
             backdrop.style.opacity = '1';
             backdrop.style.visibility = 'visible';
             document.body.style.overflow = 'hidden';
@@ -215,3 +206,4 @@
     window.bookingyardToggleServices = () => handleToggle('servicesSubmenu', 'servicesToggle');
     window.bookingyardToggleVendor = () => handleToggle('vendorSubmenu', 'vendorToggle');
 </script>
+

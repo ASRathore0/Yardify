@@ -3,19 +3,8 @@
 @section('title', 'Admin Dashboard')
 
 @section('content')
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-    tailwind.config = {
-        theme: {
-            extend: {
-                colors: {
-                    brand: { 50: '#f0fdfa', 100: '#ccfbf1', 500: '#14b8a6', 600: '#0d9488', 900: '#134e4a' },
-                    accent: { 50: '#eef2ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 900: '#312e81' }
-                }
-            }
-        }
-    }
-</script>
+@vite(['resources/css/app.css', 'resources/js/app.js'])
+
 
 <div class="py-6 sm:py-10 bg-slate-50 min-h-screen font-sans text-slate-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-12">
@@ -353,3 +342,4 @@
     }
 </script>
 @endsection
+

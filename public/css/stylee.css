@@ -2611,3 +2611,20 @@ color: #046c9f;
 }
 
  
+/* Start of Global Responsive Mobile Fixes Addendum */
+@media (max-width: 768px) {
+  header { padding: 8px 10px; }
+  .cta { right: 20px; font-size: 14px; padding: 4px 10px; }
+  .footer-container { flex-direction: column; gap: 20px; text-align: left; }
+  .modern-footer .footer-links { flex-direction: row; flex-wrap: wrap; justify-content: space-between; gap: 20px 0; } .modern-footer .footer-column { width: 48%; text-align: left; }
+  .footer-newsletter form { flex-direction: column; }
+  .social-icons { justify-content: center; padding-left: 0; }
+  .details .services ul { flex-direction: column; column-gap: 5px; }
+}
+@media (max-width: 480px) {
+  header { height: auto; min-height: 50px; }
+  .logo { font-size: 18px; }
+  .cta { position: relative; right: auto; top: auto; transform: none; margin-top: 10px; display: inline-block;} 
+  .location-search { padding-top: 80px; }
+}
+

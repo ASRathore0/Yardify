@@ -6,8 +6,8 @@
     <title>Society Deals - Buy & Sell</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    
+    <!-- <link rel="stylesheet" href="{{ asset('css/style.css') }}"> -->
     <style>
         html, body { max-width: 100%; overflow-x: hidden; }
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
@@ -29,7 +29,7 @@
     <div class="main-contentt min-h-screen">
         
         <!-- Hero Section with Search -->
-        <section class="bg-gradient-to-br from-[#046c9f] to-[#023b57] text-white pt-10 pb-16 px-4 shadow-lg relative overflow-hidden">
+        <section class="bg-gradient-to-br from-[#046c9f] to-[#023b57] text-white pt-5 pb-16 px-4 shadow-lg relative overflow-hidden">
             <!-- Decorative Elements -->
             <div class="absolute top-0 right-0 w-72 h-72 bg-white opacity-5 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
             <div class="absolute bottom-0 left-0 w-64 h-64 bg-[#0ef] opacity-10 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
@@ -159,7 +159,7 @@
     </div>
 
     <!-- Product Details Modal Overlay -->
-    <div id="dealModal" class="fixed inset-0 bg-slate-900/80 z-[100] backdrop-blur-sm flex items-end sm:items-center justify-center sm:p-4 hidden transition-opacity duration-300">
+    <div id="dealModal" style="z-index: 49;" class="fixed inset-0 pt-[52px] sm:pt-[72px] bg-slate-900/80 backdrop-blur-sm flex items-end sm:items-center justify-center sm:p-4 hidden transition-opacity duration-300">
         <!-- Modal Content Container -->
         <div class="bg-white w-full max-w-2xl sm:rounded-[2rem] rounded-t-[2rem] rounded-b-none sm:rounded-b-[2rem] overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh] relative shadow-2xl modal-enter translate-y-0 transition-transform duration-300">
             
@@ -381,6 +381,17 @@
             const modal = document.getElementById('dealModal');
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
+            
+            // Fix header position because overflow hidden breaks sticky
+            const header = document.getElementById('global-header');
+            const mainContent = document.querySelector('.main-contentt');
+            if (header) {
+                header.style.setProperty('position', 'fixed', 'important');
+                header.style.setProperty('width', '100%', 'important');
+                header.style.setProperty('top', '0', 'important');
+                if (mainContent) mainContent.style.marginTop = header.offsetHeight + 'px';
+            }
             
             // Hide bottom nav footer
             const fnav = document.getElementById('footer');
@@ -390,6 +401,17 @@
         function closeDeal() {
             document.getElementById('dealModal').classList.add('hidden');
             document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
+            
+            // Restore header position
+            const header = document.getElementById('global-header');
+            const mainContent = document.querySelector('.main-contentt');
+            if (header) {
+                header.style.removeProperty('position');
+                header.style.removeProperty('width');
+                header.style.removeProperty('top');
+                if (mainContent) mainContent.style.marginTop = '';
+            }
             
             // Show bottom nav footer
             const fnav = document.getElementById('footer');
@@ -410,3 +432,4 @@
     </script>
 </body>
 </html>
+

@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <!-- Using Tailwind for a professional structure similar to one-x-one -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
         .drag-active { border-color: #0077b6 !important; background-color: #e0f2fe !important; }
@@ -300,4 +300,5 @@
     </script>
 </body>
 </html>
+
 

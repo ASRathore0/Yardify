@@ -4,11 +4,10 @@
 
 @include('partials.header')
 @include('partials.sidebar')
-<link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
-<div class="max-w-6xl mx-auto px-4 py-8 mt-">
+<div class="max-w-6xl mx-auto px-4 mt-5 md:mt-8">
     
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 md:mb-8 mt-24">
         <div>
             <h1 class="text-3xl font-black text-slate-900">{{ $group['name'] }}</h1>
             <div class="flex items-center gap-2 mt-2">
@@ -26,15 +25,17 @@
                 <span class="text-slate-500 text-sm font-medium ml-2">{{ count($group['members']) }} members</span>
             </div>
         </div>
-            <div class="flex items-center gap-3">
-            <button id="openExpenseModalTop" type="button" class="inline-flex items-center px-4 py-2.5 bg-[#046c9f] text-white rounded-xl font-bold shadow-sm hover:bg-[#035680] transition">
-                <svg width="16" height="16" class="w-4 h-4" style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <span class="ml-2">Add Transaction</span>
+        <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 md:gap-3 w-full md:w-auto">
+            <button id="openExpenseModalTop" type="button" class="flex-1 sm:flex-none inline-flex justify-center items-center px-4 py-2 bg-[#046c9f] text-white rounded-xl font-bold text-sm md:text-base shadow-sm hover:bg-[#035680] transition whitespace-nowrap">
+                <svg width="16" height="16" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="ml-1 md:ml-2 block sm:hidden">Add</span>
+                <span class="ml-1 md:ml-2 hidden sm:block">Add Transaction</span>
             </button>
             <a href="{{ route('expense.index') }}" 
-               class="inline-flex items-center px-5 py-2.5 bg-white border border-slate-200 rounded-xl font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition">
-                <svg width="16" height="16" class="w-4 h-4 mr-2" style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Back To Dashboard
+               class="flex-1 sm:flex-none inline-flex justify-center items-center px-4 py-2 bg-white border border-slate-200 rounded-xl font-bold text-sm md:text-base text-slate-700 shadow-sm hover:bg-slate-50 transition whitespace-nowrap">
+                <svg width="16" height="16" class="w-4 h-4 mr-1 md:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="block sm:hidden">Back</span>
+                <span class="hidden sm:block">Back To Dashboard</span>
             </a>
         </div>
     </div>
@@ -187,67 +188,109 @@
 
         <!-- Expense Modal -->
          <div id="expenseModal" class="fixed inset-0 z-50 hidden">
-            <div id="expenseModalOverlay" class="absolute inset-0 bg-black/50"></div>
-            <div class="relative flex items-center justify-center min-h-full p-4 sm:p-6">
-                    <div class="bg-white w-full max-w-xl rounded-3xl shadow-lg max-h-[85vh] overflow-visible">
-                    <div class="p-6">
-                        <div class="flex items-start justify-between mb-4">
-                            <h3 id="expenseModalTitle" class="text-lg font-bold">Add New Transaction</h3>
-                            <button id="closeExpenseModal" class="text-slate-400 hover:text-slate-600">✕</button>
-                        </div>
+            <div id="expenseModalOverlay" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="document.getElementById('closeExpenseModal').click()"></div>
+            <div id="expenseModalWrapper" class="relative flex items-end sm:items-center justify-center min-h-full p-0 sm:p-6 z-10" onclick="if(event.target === this) document.getElementById('closeExpenseModal').click()">
+                <div class="bg-white pointer-events-auto w-full sm:max-w-[420px] rounded-t-[2rem] sm:rounded-[1.5rem] shadow-2xl max-h-[95vh] sm:max-h-[90vh] flex flex-col overflow-hidden transform transition-transform translate-y-0">
+                    
+                    <!-- Drag Handle (Mobile only) -->
+                    <div class="w-full flex justify-center py-3 sm:hidden absolute top-0 left-0 right-0 z-20 pointer-events-none">
+                        <div class="w-12 h-1.5 bg-slate-200 rounded-full"></div>
+                    </div>
 
-                        <form id="expenseForm" class="space-y-4" method="POST" action="{{ url('/expense-management/groups/'.$group['id'].'/expenses') }}">
+                    <!-- Header -->
+                    <div class="px-5 pt-8 sm:pt-5 pb-4 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white relative z-10">
+                        <h3 id="expenseModalTitle" class="text-lg sm:text-[19px] font-black text-slate-800 tracking-tight">Add Transaction</h3>
+                        <button id="closeExpenseModal" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors focus:outline-none">
+                            <i class="fa-solid fa-xmark text-sm"></i>
+                        </button>
+                    </div>
+
+                    <!-- Scrollable Body -->
+                    <div class="p-5 sm:p-6 overflow-y-auto custom-scrollbar flex-1 relative bg-white">
+                        <form id="expenseForm" class="space-y-6" method="POST" action="{{ url('/expense-management/groups/'.$group['id'].'/expenses') }}">
                             @csrf
                             <div id="method-spoof"></div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="md:col-span-2">
-                                    <label class="block text-xs font-bold text-slate-400 uppercase mb-2 ml-1">What was it for?</label>
-                                    <input name="title" placeholder="e.g. Monthly Rent or Groceries" required 
-                                        class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#046c9f] outline-none transition">
+                            
+                            <!-- Amount Section -->
+                            <div class="flex flex-col pb-2">
+                                <label for="amountInput" class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Amount</label>
+                                <div class="relative flex items-center w-full bg-white border border-slate-200 focus-within:border-[#046c9f] focus-within:ring-2 focus-within:ring-[#046c9f]/20 rounded-[1.25rem] shadow-sm transition-all p-2">
+                                    <div class="flex items-center justify-center bg-[#f0f9ff] text-[#046c9f] border border-[#bae6fd] w-14 h-14 rounded-xl shrink-0">
+                                        <span class="text-2xl font-bold">₹</span>
+                                    </div>
+                                    <div class="flex-1 pl-4 pr-2">
+                                        <input id="amountInput" name="amount" type="number" step="0.01" placeholder="0.00" required 
+                                            class="w-full bg-transparent border-none text-3xl font-black text-slate-800 focus:ring-0 placeholder-slate-200 p-0 m-0">
+                                    </div>
                                 </div>
+                            </div>
+                            
+                            <!-- Details Card -->
+                            <div class="bg-slate-50 p-4 rounded-[1.25rem] border border-slate-100 space-y-4">
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-400 uppercase mb-2 ml-1">Amount (₹)</label>
-                                    <input name="amount" type="number" step="0.01" placeholder="0.00" required 
-                                        class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#046c9f] outline-none transition font-bold text-[#046c9f]">
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">Title</label>
+                                    <input name="title" placeholder="e.g. Dinner, Groceries" required 
+                                        class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#046c9f] focus:ring-2 focus:ring-[#046c9f]/20 outline-none transition text-[15px] font-semibold text-slate-800 placeholder-slate-400 bg-white shadow-sm">
                                 </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-400 uppercase mb-2 ml-1">Who Paid?</label>
-                                    @php $me = auth()->user() ? (auth()->user()->name ?: auth()->user()->email) : null; @endphp
-                                    <select name="paid_by" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white outline-none">
-                                        @foreach($group['members'] as $m)
-                                            <option value="{{ $m['name'] }}" @if($me && $me == $m['name']) selected @endif>{{ $m['name'] }}</option>
-                                        @endforeach
-                                    </select>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">Who Paid?</label>
+                                        @php $me = auth()->user() ? (auth()->user()->name ?: auth()->user()->email) : null; @endphp
+                                        <div class="relative">
+                                            <select name="paid_by" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white shadow-sm focus:border-[#046c9f] focus:ring-2 focus:ring-[#046c9f]/20 outline-none transition appearance-none text-[14px] font-semibold text-slate-800 cursor-pointer pr-10">
+                                                @foreach($group['members'] as $m)
+                                                    <option value="{{ $m['name'] }}" @if($me && $me == $m['name']) selected @endif>{{ $m['name'] }}</option>
+                                                @endforeach
+                                            </select>
+                                            <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400">
+                                                <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2 sm:gap-3">
+                                        <div>
+                                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1 flex items-center gap-1 group relative cursor-help">
+                                                Category
+                                            </label>
+                                            <div class="relative">
+                                                <select name="category" class="w-full pl-3 pr-6 py-3 rounded-xl border border-slate-200 bg-white shadow-sm focus:border-[#046c9f] focus:ring-2 focus:ring-[#046c9f]/20 outline-none transition appearance-none text-[13px] font-semibold text-slate-700 cursor-pointer">
+                                                    <option>General</option><option>Rent</option><option>Groceries</option><option>Food</option>
+                                                </select>
+                                                <div class="absolute inset-y-0 right-2 flex items-center pointer-events-none text-slate-400">
+                                                    <i class="fa-solid fa-chevron-down text-[9px]"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">Split</label>
+                                            <div class="relative">
+                                                <select name="split_method" class="w-full pl-3 pr-6 py-3 rounded-xl border border-slate-200 bg-white shadow-sm focus:border-[#046c9f] focus:ring-2 focus:ring-[#046c9f]/20 outline-none transition appearance-none text-[13px] font-semibold text-slate-700 cursor-pointer">
+                                                    <option value="equal">Equally</option>
+                                                    <option value="exact">Exact</option>
+                                                    <option value="percent">Percent</option>
+                                                </select>
+                                                <div class="absolute inset-y-0 right-2 flex items-center pointer-events-none text-slate-400">
+                                                    <i class="fa-solid fa-chevron-down text-[9px]"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 py-2">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Category</label>
-                                    <select name="category" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-100 bg-slate-50">
-                                        <option>Rent</option><option>Groceries</option><option>Utilities</option><option>Food</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Split Method</label>
-                                    <select name="split_method" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-100 bg-slate-50">
-                                        <option value="equal">Equally</option>
-                                        <option value="exact">Exact Amount</option>
-                                        <option value="percent">Percentage</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="border-t border-slate-100 pt-3">
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-3 text-[#046c9f]">Tap to Exclude / Include Members</label>
+                            <!-- Split Members -->
+                            <div class="pt-1">
+                                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-users text-slate-400 text-xs"></i> Split Between
+                                </label>
                                 <input type="hidden" name="is_custom_split" value="1">
                                 <div class="flex flex-wrap gap-2" id="member-chips">
                                     @foreach($group['members'] as $index => $m)
                                         <button type="button" 
                                             onclick="toggleExpenseMember(this, '{{ $index }}')"
-                                            class="px-3 py-1.5 rounded-full text-xs font-bold border transition-all select-none bg-[#e0f2fe] text-[#046c9f] border-[#046c9f] flex items-center gap-2 hover:brightness-95">
+                                            class="px-3 py-1.5 rounded-xl text-[13px] font-bold border transition-all select-none bg-[#e0f2fe] text-[#046c9f] border-[#046c9f] shadow-sm flex items-center gap-2 hover:brightness-95 active:scale-95">
                                             @if(!empty($m['avatar']))
-                                                <img src="{{ asset('storage/' . $m['avatar']) }}" class="w-4 h-4 rounded-full object-cover">
+                                                <img src="{{ asset('storage/' . $m['avatar']) }}" class="w-5 h-5 rounded-full object-cover">
                                             @endif
                                             <span>{{ $m['name'] }}</span>
                                             <span class="text-[10px] opacity-60">✕</span>
@@ -255,14 +298,19 @@
                                         <input type="hidden" name="involved_members[]" value="{{ $m['name'] }}" id="hidden-input-{{ $index }}">
                                     @endforeach
                                 </div>
-                                <p class="text-[10px] text-slate-400 mt-2">* Deselected members won't pay for this.</p>
-                            </div>
-
-                            <div class="pt-4">
-                                <button type="submit" class="w-full py-3 bg-slate-900 text-white rounded-2xl font-black tracking-wide hover:bg-black transition-all">Save Transaction</button>
+                                <p class="text-[11px] text-slate-400 mt-3 ml-1 leading-snug font-medium">Deselected members won't be charged for this transaction.</p>
                             </div>
                         </form>
                     </div>
+
+                    <!-- Footer Sticky Action Area -->
+                    <div class="p-4 sm:p-5 border-t border-slate-100 bg-white shrink-0 z-10 w-full flex justify-end shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.02)]">
+                        <button type="button" onclick="document.getElementById('closeExpenseModal').click()" class="px-5 py-3 text-slate-500 font-bold text-sm hover:bg-slate-50 hover:text-slate-800 rounded-xl transition mr-2 hidden sm:block">Cancel</button>
+                        <button type="submit" form="expenseForm" class="w-full sm:w-auto px-6 py-3.5 bg-[#046c9f] hover:bg-[#035b88] text-white rounded-xl font-bold text-[15px] shadow-lg shadow-blue-900/20 transition-all focus:ring-4 focus:ring-[#046c9f]/30 active:scale-[0.98] flex items-center justify-center gap-2">
+                            Save Transaction
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -500,12 +548,14 @@
                          const actions = document.getElementById('expenseActions');
                          if(actions) actions.classList.add('hidden');
                      }
+                     const fnav = document.getElementById('footer');
+                     if (fnav) fnav.style.display = 'none';
                 };
 
                 function openModal(){
                     if(!modal) return;
                     // Reset to Create Mode
-                    modalTitle.textContent = 'Add New Transaction';
+                    modalTitle.textContent = 'Add Transaction';
                     if(form) {
                         form.action = defaultAction;
                         form.reset();
@@ -521,11 +571,15 @@
                     
                     modal.classList.remove('hidden');
                     document.body.style.overflow = 'hidden';
+                    const fnav = document.getElementById('footer');
+                    if (fnav) fnav.style.display = 'none';
                 }
                 function closeModal(){
                     if(!modal) return;
                     modal.classList.add('hidden');
                     document.body.style.overflow = 'auto';
+                    const fnav = document.getElementById('footer');
+                    if (fnav) fnav.style.display = '';
                 }
 
                 if(openTop) openTop.addEventListener('click', openModal);
@@ -912,5 +966,4 @@
             })();
         </script>
         @include('partials.footer-modern')
-        <script src="{{ asset('js/script.js') }}"></script>
-        <script src="{{ asset('js/script1.js') }}"></script>
+@endsection

@@ -4,31 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BookingYard — Expense Management</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Prevent UI flicker/double-render while Vite starts */
+        html { visibility: hidden; opacity: 0; }
+    </style>
+    <noscript><style>html { visibility: visible; opacity: 1; }</style></noscript>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            DEFAULT: '#046c9f',
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            200: '#bae6fd',
-                            300: '#7dd3fc',
-                            400: '#38bdf8',
-                            500: '#0ea5e9',
-                            600: '#046c9f', // Main brand color
-                            700: '#0369a1',
-                            800: '#075985',
-                            900: '#0c4a6e',
-                        }
-                    }
-                }
-            }
-        }
+        // Fallback to reveal UI after 300ms in case local Vite server is delayed
+        setTimeout(() => { document.documentElement.style.visibility = 'visible'; document.documentElement.style.opacity = '1'; }, 300);
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
@@ -36,8 +24,6 @@
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
-    
-
     <main>
         @yield('content')
     </main>

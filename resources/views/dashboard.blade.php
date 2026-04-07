@@ -72,7 +72,7 @@
       padding: 30px 20px 45px;
       color: #fff;
       position: relative;
-      margin-top: 10px; /* If there's a fixed top navbar */
+      /* margin-top: 10px; If there's a fixed top navbar */
       /* -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 50%); */
       /* mask-image: linear-gradient(to bottom, black 70%, transparent 100%); */
   }
