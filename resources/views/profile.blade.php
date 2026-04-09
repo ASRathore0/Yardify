@@ -76,10 +76,15 @@
         <div style="margin-bottom: 25px;">
             <p style="font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; margin-left: 10px; margin-bottom: 10px;">Vendor Hub</p>
             <div style="background: white; border-radius: 20px; overflow: hidden; border: 1px solid #f1f5f9;">
-                <a href="/vendor" class="menu-item" style="display: flex; align-items: center; justify-content: space-between; padding: 15px; text-decoration: none; border-bottom: 1px solid #f8fafc;">
+                @php
+                    $hasVendor = Auth::check() && \App\Models\Vendor::where('user_id', Auth::id())->exists();
+                    $vendorUrl = $hasVendor ? route('vendor.dashboard') : route('vendor.form');
+                    $vendorText = $hasVendor ? 'Our Business' : 'Become a Vendor';
+                @endphp
+                <a href="{{ $vendorUrl }}" class="menu-item" style="display: flex; align-items: center; justify-content: space-between; padding: 15px; text-decoration: none; border-bottom: 1px solid #f8fafc;">
                     <div style="display: flex; align-items: center; gap: 15px;">
                         <div style="width: 38px; height: 38px; border-radius: 10px; background: #ecfdf5; color: #059669; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-store"></i></div>
-                        <span style="font-size: 0.95rem; font-weight: 600; color: #334155;">Our Business</span>
+                        <span style="font-size: 0.95rem; font-weight: 600; color: #334155;">{{ $vendorText }}</span>
                     </div>
                     <i class="fa-solid fa-chevron-right" style="color: #cbd5e0; font-size: 0.8rem;"></i>
                 </a>

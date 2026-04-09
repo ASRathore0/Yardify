@@ -3,8 +3,6 @@
 @section('title', 'Admin Dashboard')
 
 @section('content')
-@vite(['resources/css/app.css', 'resources/js/app.js'])
-
 
 <div class="py-6 sm:py-10 bg-slate-50 min-h-screen font-sans text-slate-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-12">

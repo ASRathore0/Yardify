@@ -267,6 +267,19 @@
                             <div class="preview-area" id="imagePreview" style="display:none;"></div>
                         </div>
                     </div>
+
+                    <div class="form-group no-icon">
+                        <label>Gallery Images <span class="hint">(Optional, select multiple)</span></label>
+                        <div class="dropzone" id="galleryDropzoneArea">
+                            <input type="file" id="galleryImages" name="gallery_images[]" accept="image/*" class="dropzone-input" multiple />
+                            <div class="upload-placeholder" id="galleryUploadPlaceholder" style="display: flex; flex-direction: column; align-items: center;">
+                                <i class="fa-solid fa-images" style="font-size: 2rem; color: var(--primary); margin-bottom: 8px;"></i>
+                                <p>Click or Drag multiple images here</p>
+                                <span class="hint">Hold Ctrl/Cmd to select multiple files</span>
+                            </div>
+                            <div class="preview-area" id="galleryPreview" style="display:none; flex-direction:row; flex-wrap:wrap; gap:10px; justify-content: center; padding-top: 15px;"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- 2. Location -->
@@ -479,6 +492,30 @@
                     updateCompleteness();
                 };
                 reader.readAsDataURL(file);
+            }
+        });
+
+        const galleryImagesInput = document.getElementById('galleryImages');
+        const galleryPreview = document.getElementById('galleryPreview');
+        const galleryUploadPlaceholder = document.getElementById('galleryUploadPlaceholder');
+
+        galleryImagesInput.addEventListener('change', (e) => {
+            const files = e.target.files;
+            if (files && files.length > 0) {
+                galleryPreview.innerHTML = '';
+                Array.from(files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = evt => {
+                        galleryPreview.innerHTML += `<img src="${evt.target.result}" style="max-height: 80px; border-radius: 8px; object-fit: cover; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" alt="Gallery Preview">`;
+                    };
+                    reader.readAsDataURL(file);
+                });
+                galleryPreview.style.display = 'flex';
+                galleryUploadPlaceholder.style.display = 'none';
+            } else {
+                galleryPreview.innerHTML = '';
+                galleryPreview.style.display = 'none';
+                galleryUploadPlaceholder.style.display = 'flex';
             }
         });
 

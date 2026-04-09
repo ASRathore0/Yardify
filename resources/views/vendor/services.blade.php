@@ -136,8 +136,12 @@
               <div class="service-image">
                 @php
                     $images = $item->image_path;
-                    if(is_string($images)) $images = json_decode($images, true);
-                    $firstImage = (!empty($images) && is_array($images)) ? asset('storage/'.$images[0]) : asset('image/Booking.jpg');
+                      // if the database returned a string (e.g. single upload without JSON format or double encoded), decode it
+                      if(is_string($images)) $images = @json_decode($images, true) ?: [$images];
+                      
+                      $firstImage = (!empty($images) && is_array($images)) 
+                        ? (str_starts_with($images[0], 'http') ? $images[0] : asset('storage/'.$images[0])) 
+                        : asset('image/Booking.jpg');
                 @endphp
                 <img src="{{ $firstImage }}" alt="{{ $item->title }}">
                 <div style="position:absolute;left:12px;top:12px;background:{{ $item->type == 'sell' ? '#10b981' : '#f59e0b' }};color:#fff;padding:4px 8px;border-radius:6px;font-weight:700;font-size:11px;text-transform:uppercase;">

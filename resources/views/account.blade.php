@@ -198,7 +198,7 @@
 <body>
     <div class="container">
         <div class="header-nav">
-            <i class="fas fa-arrow-left back-icon" onclick="window.history.back()"></i>
+            <i class="fas fa-arrow-left back-icon" onclick="goBack()"></i>
             <h2>Edit Profile</h2>
         </div>
 
@@ -246,6 +246,15 @@
             </div>
 
             <div class="form-group">
+                <label for="phone">Mobile Number</label>
+                <div class="input-wrapper">
+                    <input id="phone" type="tel" name="phone" value="{{ old('phone',$user->phone) }}" readonly>
+                    <i class="fas fa-pen-to-square input-icon" onclick="enableField('phone')"></i>
+                </div>
+                @error('phone')<small class="error-text">{{ $message }}</small>@enderror
+            </div>
+
+            <div class="form-group">
                 <label for="password">Password</label>
                 <div class="input-wrapper">
                     <input id="password" type="password" name="password" placeholder="••••••••" readonly>
@@ -258,9 +267,10 @@
 
             <div class="form-group">
                 <label for="date_of_birth">Date of Birth</label>
-                <input id="date_of_birth" type="date" name="date_of_birth" value="{{ old('date_of_birth', optional($user->date_of_birth)->format('Y-m-d')) }}">
-                @error('date_of_birth')<small class="error-text">{{ $message }}</small>@enderror
-            </div>
+                <div class="input-wrapper">
+                    <input id="date_of_birth" type="date" name="date_of_birth" value="{{ old('date_of_birth', optional($user->date_of_birth)->format('Y-m-d')) }}" readonly>
+                    <i class="fas fa-pen-to-square input-icon" onclick="enableField('date_of_birth')"></i>
+                </div>
 
             <div class="form-group">
                 <label for="country">Country</label>
@@ -281,6 +291,10 @@
     </div>
 
     <script>
+        function goBack() {
+            window.location.href = "{{ route('profile') }}";
+        }
+
         function enableField(id){ 
             const el = document.getElementById(id); 
             el.removeAttribute('readonly'); 

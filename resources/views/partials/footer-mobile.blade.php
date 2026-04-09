@@ -206,13 +206,17 @@
 @media (max-width:420px) {
   .footer-button .icon { font-size:25px; }
   .footer-button { padding: 5px 2px; }
-  .modern-footer { padding-bottom: 80px; /* Space for the bottom fixed nav */ }
+  .modern-footer { padding-bottom: px; /* Space for the bottom fixed nav */ }
 }
 </style>
 <footer class="modern-footer">
 	<div class="footer-container">
 		<div class="footer-logo">
-			<h2>BookingYard<span></span></h2>
+			<a href="/" class="flex outline-none mb-3" style="text-decoration: none;">
+				<span class="text-3xl sm:text-[30px] font-black text-white tracking-tight leading-none hover:text-[#38bdf8] transition-colors">
+					Booking<span class="text-[#0ea5e9]" style="color: #046c9f;">Yard</span>
+				</span>
+			</a>
 			<p>"Bringing every booking services to your fingertips"</p>
 		</div>
 

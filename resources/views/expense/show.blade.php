@@ -5,6 +5,8 @@
 @include('partials.header')
 @include('partials.sidebar')
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <div class="max-w-6xl mx-auto px-4 mt-5 md:mt-8">
     
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 md:mb-8 mt-24">
@@ -187,10 +189,10 @@
 </div>
 
         <!-- Expense Modal -->
-         <div id="expenseModal" class="fixed inset-0 z-50 hidden">
+         <div id="expenseModal" class="fixed inset-0 z-40 hidden">
             <div id="expenseModalOverlay" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="document.getElementById('closeExpenseModal').click()"></div>
             <div id="expenseModalWrapper" class="relative flex items-end sm:items-center justify-center min-h-full p-0 sm:p-6 z-10" onclick="if(event.target === this) document.getElementById('closeExpenseModal').click()">
-                <div class="bg-white pointer-events-auto w-full sm:max-w-[420px] rounded-t-[2rem] sm:rounded-[1.5rem] shadow-2xl max-h-[95vh] sm:max-h-[90vh] flex flex-col overflow-hidden transform transition-transform translate-y-0">
+                <div class="bg-white pointer-events-auto w-full sm:max-w-[420px] rounded-t-[2rem] sm:rounded-[1.5rem] shadow-2xl h-[85vh] sm:h-auto max-h-[vh] sm:max-h-[vh] flex flex-col overflow-hidden transform transition-transform translate-y-0">
                     
                     <!-- Drag Handle (Mobile only) -->
                     <div class="w-full flex justify-center py-3 sm:hidden absolute top-0 left-0 right-0 z-20 pointer-events-none">
@@ -316,7 +318,7 @@
         </div>
 
         <!-- Leave Confirmation Modal -->
-        <div id="leaveModal" class="fixed inset-0 z-50 hidden">
+        <div id="leaveModal" class="fixed inset-0 z-40 hidden">
             <div id="leaveModalOverlay" class="absolute inset-0 bg-black/50"></div>
             <div class="relative flex items-center justify-center min-h-full p-4 sm:p-6">
                 <div class="bg-white w-full max-w-md rounded-3xl shadow-lg overflow-hidden">
@@ -337,7 +339,7 @@
         </div>
 
         <!-- Settle Confirmation Modal -->
-        <div id="settleModal" class="fixed inset-0 z-50 hidden">
+        <div id="settleModal" class="fixed inset-0 z-40 hidden">
             <div id="settleModalOverlay" class="absolute inset-0 bg-black/50"></div>
             <div class="relative flex items-center justify-center min-h-full p-4 sm:p-6">
                 <div class="bg-white w-full max-w-md rounded-3xl shadow-lg overflow-hidden">
@@ -358,7 +360,7 @@
         </div>
 
         <!-- Settlement Details Modal -->
-        <div id="settlementDetailsModal" class="fixed inset-0 z-50 hidden">
+        <div id="settlementDetailsModal" class="fixed inset-0 z-40 hidden">
             <div id="sdOverlay" class="absolute inset-0 bg-black/50"></div>
             <div class="relative flex items-center justify-center min-h-full p-4 sm:p-6">
                 <div class="bg-white w-full max-w-sm rounded-3xl shadow-lg overflow-hidden">
@@ -384,7 +386,7 @@
         </div>
 
         <!-- Expense Details Modal -->
-        <div id="expenseDetailsModal" class="fixed inset-0 z-50 hidden">
+        <div id="expenseDetailsModal" class="fixed inset-0 z-40 hidden">
             <div id="edOverlay" class="absolute inset-0 bg-black/50"></div>
             <div class="relative flex items-center justify-center min-h-full p-4 sm:p-6">
                 <div class="bg-white w-full max-w-sm rounded-3xl shadow-lg overflow-hidden">
@@ -428,7 +430,7 @@
         </div>
 
         <!-- Delete Confirmation Modal -->
-        <div id="deleteConfirmModal" class="fixed inset-0 z-50 hidden">
+        <div id="deleteConfirmModal" class="fixed inset-0 z-40 hidden">
             <div id="deleteConfirmOverlay" class="absolute inset-0 bg-black/50"></div>
             <div class="relative flex items-center justify-center min-h-full p-4 sm:p-6">
                 <div class="bg-white w-full max-w-md rounded-3xl shadow-lg overflow-hidden">

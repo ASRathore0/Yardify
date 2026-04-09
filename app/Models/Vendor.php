@@ -23,7 +23,14 @@ class Vendor extends Model
     public function getImageUrlAttribute(): ?string
     {
         if (!$this->image_path) return null;
-        if (str_starts_with($this->image_path, 'http')) return $this->image_path;
-        return asset('storage/'.$this->image_path);
+        
+        $path = $this->image_path;
+        $decoded = @json_decode($path, true);
+        if (is_array($decoded) && count($decoded) > 0) {
+            $path = $decoded[0];
+        }
+
+        if (str_starts_with($path, 'http')) return $path;
+        return asset('storage/'.$path);
     }
 }

@@ -25,7 +25,7 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 8px 12px;
+	padding: 10px 14px;
 }
 
 .footer-button {
@@ -33,7 +33,7 @@
 	flex-direction: row;
 	align-items: center;
 	justify-content: center;
-	padding: 10px 14px;
+	padding: 12px 16px;
 	color: #1f2937;
 	text-decoration: none;
 	font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -44,7 +44,7 @@
 }
 
 .footer-button .icon { 
-	font-size: 20px; 
+	font-size: 22px; 
 	margin-bottom: 0; 
 	transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -67,7 +67,7 @@
 .footer-button.active {
 	background-color: rgba(4, 108, 159, 0.12);
 	color: #046c9f;
-	padding: 10px 18px; /* Slightly larger padding for active item */
+	padding: 12px 20px; /* Slightly larger padding for active item */
 }
 
 .footer-button.active span {
@@ -83,11 +83,11 @@
 
 @media (max-width:400px) {
 	#footer { left: 4%; right: 4%; bottom: 15px; }
-	.footer-links { padding: 6px 8px; }
-	.footer-button { padding: 10px; }
-	.footer-button.active { padding: 10px 14px; }
+	.footer-links { padding: 8px 10px; }
+	.footer-button { padding: 12px; }
+	.footer-button.active { padding: 12px 16px; }
 	.footer-button .icon { font-size: 18px; }
-	.footer-button span { font-size: 12px; }
+	.footer-button span { font-size: 13px; }
 }
 </style>
 

@@ -155,7 +155,7 @@
   <!-- Top Nav (Simplified for Edit Page) -->
   <header>
     <div class="brand-area">
-      <i class="fa-solid fa-shapes"></i> Vendor Panel
+      <i class=""></i> Vendor Panel
     </div>
     <a href="{{ route('vendor.dashboard') }}" class="nav-btn">
       <i class="fa-solid fa-xmark"></i> Close
@@ -236,18 +236,56 @@
         <div class="form-card">
           <div class="card-header"><i class="fa-regular fa-image"></i> Cover Image</div>
           <div class="card-body">
-            <div class="file-upload-wrapper">
-              <input type="file" name="image" accept="image/*" class="file-input">
+            <div class="file-upload-wrapper" id="coverUploadWrapper">
+              <input type="file" id="coverImageInput" name="image" accept="image/*" class="file-input">
               <div class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
               <div class="upload-text">Click to upload image</div>
               <div class="upload-hint">SVG, PNG, JPG or GIF (Max. 2MB)</div>
+              <div id="coverPreview" style="display:none; margin-top:10px;"></div>
             </div>
             @if($vendor->image_url)
               <div style="margin-top:10px; font-size:0.85rem; color:#16a34a;">
-                <i class="fa-solid fa-check"></i> Current image active
+                <i class="fa-solid fa-check"></i> Current cover image active
               </div>
             @endif
           </div>
+        </div>
+      </div>
+
+      <!-- Gallery Images Card -->
+      <div class="form-card">
+        <div class="card-header"><i class="fa-solid fa-images"></i> Gallery Images</div>
+        <div class="card-body">
+          <div class="file-upload-wrapper" id="galleryUploadWrapper">
+            <input type="file" id="galleryImagesInput" name="gallery_images[]" accept="image/*" class="file-input" multiple>
+            <div class="upload-icon"><i class="fa-solid fa-images"></i></div>
+            <div class="upload-text">Click or Drag multiple images to upload</div>
+            <div class="upload-hint">Hold Ctrl/Cmd to select multiple files</div>
+            <div id="galleryUpdatePreview" style="display:none; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:15px;"></div>
+          </div>
+          
+          @php
+              $existingGallery = [];
+              $rawPath = $vendor->image_path;
+              if (!empty($rawPath)) {
+                  $decoded = @json_decode($rawPath, true);
+                  if (is_array($decoded)) {
+                      // First element is cover, rest are gallery
+                      $existingGallery = array_slice($decoded, 1);
+                  }
+              }
+          @endphp
+          
+          @if(count($existingGallery) > 0)
+            <div style="margin-top:15px;">
+                <label style="font-size: 0.9rem; color: var(--text-muted);">Current Gallery Images:</label>
+                <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;">
+                    @foreach($existingGallery as $gImg)
+                        <img src="{{ str_starts_with($gImg, 'http') ? $gImg : asset('storage/' . $gImg) }}" style="height: 60px; border-radius: 6px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    @endforeach
+                </div>
+            </div>
+          @endif
         </div>
       </div>
 
@@ -312,5 +350,35 @@
 
     </form>
   </div>
+
+  <script>
+    // Preview cover and gallery images
+    document.getElementById('coverImageInput').addEventListener('change', function(e) {
+      if (this.files && this.files[0]) {
+        let reader = new FileReader();
+        let preview = document.getElementById('coverPreview');
+        reader.onload = function(evt) {
+          preview.innerHTML = `<img src="${evt.target.result}" style="max-height:80px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.1);">`;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+
+    document.getElementById('galleryImagesInput').addEventListener('change', function(e) {
+      let preview = document.getElementById('galleryUpdatePreview');
+      if (this.files && this.files.length > 0) {
+        preview.innerHTML = '';
+        Array.from(this.files).forEach(file => {
+          let reader = new FileReader();
+          reader.onload = function(evt) {
+            preview.innerHTML += `<img src="${evt.target.result}" style="max-height:60px; object-fit:cover; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.1);">`;
+          };
+          reader.readAsDataURL(file);
+        });
+        preview.style.display = 'flex';
+      }
+    });
+  </script>
 </body>
 </html>

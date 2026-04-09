@@ -45,6 +45,7 @@ class VendorController extends Controller
             'whatsapp_number' => 'nullable|string|max:32',
             'email' => 'nullable|email',
             'image' => 'nullable|image|max:4096',
+            'gallery_images.*' => 'nullable|image|max:4096',
             'other_services' => 'array',
             'other_services.*' => 'string|max:120',
         ]);
@@ -52,9 +53,20 @@ class VendorController extends Controller
         $vendor = new Vendor($data);
         $vendor->user_id = $request->user()->id;
 
+        $imagePaths = [];
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('vendors', 'public');
-            $vendor->image_path = $path;
+            $imagePaths[] = $request->file('image')->store('vendors', 'public');
+        }
+        if ($request->hasFile('gallery_images')) {
+            foreach ($request->file('gallery_images') as $file) {
+                $imagePaths[] = $file->store('vendors', 'public');
+            }
+        }
+        
+        if (!empty($imagePaths)) {
+            $vendor->image_path = count($imagePaths) === 1 && !$request->hasFile('gallery_images') 
+                ? $imagePaths[0] 
+                : json_encode($imagePaths);
         }
 
         $vendor->save();
@@ -232,12 +244,35 @@ class VendorController extends Controller
             'street' => 'nullable|string|max:255',
             'landmark' => 'nullable|string|max:255',
             'image' => 'nullable|image|max:4096',
+            'gallery_images.*' => 'nullable|image|max:4096',
         ]);
+        
+        $imagePaths = [];
+        if ($vendor->image_path) {
+            $decoded = @json_decode($vendor->image_path, true);
+            $imagePaths = is_array($decoded) ? $decoded : [$vendor->image_path];
+        }
+
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('vendors', 'public');
-            $data['image_path'] = $path;
+            if (!empty($imagePaths)) {
+                $imagePaths[0] = $path; // Replace cover
+            } else {
+                $imagePaths[] = $path;
+            }
+        }
+        
+        if ($request->hasFile('gallery_images')) {
+            foreach ($request->file('gallery_images') as $file) {
+                $imagePaths[] = $file->store('vendors', 'public');
+            }
+        }
+        
+        if (!empty($imagePaths)) {
+            $data['image_path'] = json_encode($imagePaths);
         }
         unset($data['image']);
+        unset($data['gallery_images']);
         $vendor->update($data);
         return redirect()->route('vendor.dashboard')->with('status','Vendor profile updated');
     }
@@ -259,12 +294,35 @@ class VendorController extends Controller
             'street' => 'nullable|string|max:255',
             'landmark' => 'nullable|string|max:255',
             'image' => 'nullable|image|max:4096',
+            'gallery_images.*' => 'nullable|image|max:4096',
         ]);
+        
+        $imagePaths = [];
+        if ($vendor->image_path) {
+            $decoded = @json_decode($vendor->image_path, true);
+            $imagePaths = is_array($decoded) ? $decoded : [$vendor->image_path];
+        }
+
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('vendors', 'public');
-            $data['image_path'] = $path;
+            if (!empty($imagePaths)) {
+                $imagePaths[0] = $path; // Replace cover
+            } else {
+                $imagePaths[] = $path;
+            }
+        }
+        
+        if ($request->hasFile('gallery_images')) {
+            foreach ($request->file('gallery_images') as $file) {
+                $imagePaths[] = $file->store('vendors', 'public');
+            }
+        }
+        
+        if (!empty($imagePaths)) {
+            $data['image_path'] = json_encode($imagePaths);
         }
         unset($data['image']);
+        unset($data['gallery_images']);
         $vendor->update($data);
         return redirect()->route('vendor.dashboard')->with('status','Vendor profile updated');
     }

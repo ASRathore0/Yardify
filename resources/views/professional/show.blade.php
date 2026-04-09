@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>{{ $vendor->title }} - BookingYard</title>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <!-- <link rel="stylesheet" href="{{ asset('css/style.css') }}"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -24,12 +24,29 @@
     @include('partials.sidebar')
 
 @php
-    // Mocking a gallery array for the UI. If you add a 'gallery' column later, you can replace this variable.
-    $gallery = [
-        $vendor->image_url ?? asset('imagee/Booking.jpg'),
-        asset('imagee/banner.webp'),
-        asset('imagee/service.png')
-    ];
+    $gallery = [];
+    $rawPath = $vendor->image_path;
+    
+    if (!empty($rawPath)) {
+        // Check if it's a JSON array
+        $decoded = @json_decode($rawPath, true);
+        if (is_array($decoded)) {
+            foreach ($decoded as $path) {
+                if (str_starts_with($path, 'http')) {
+                    $gallery[] = $path;
+                } else {
+                    $gallery[] = asset('storage/' . $path);
+                }
+            }
+        } else {
+            // It's a single string
+            $gallery[] = $vendor->image_url;
+        }
+    }
+
+    if (empty($gallery)) {
+        $gallery[] = asset('imagee/Booking.jpg');
+    }
 @endphp
 
     <!-- Hero Section (Slider) -->

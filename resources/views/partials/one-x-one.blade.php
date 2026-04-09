@@ -100,8 +100,19 @@
                     $initials = strtoupper($initials);
                     $colors = ['from-blue-100 to-slate-200', 'from-pink-100 to-slate-200', 'from-yellow-100 to-slate-200', 'from-green-100 to-slate-200', 'from-purple-100 to-slate-200'];
                     $colorClass = $colors[$item->id % count($colors)];
-                    $imageUrl = ($item->image_path && count($item->image_path) > 0) ? asset('storage/'.$item->image_path[0]) : 'https://placehold.co/600x400/e2e8f0/475569?text=No+Image';
-                    $imagesJson = json_encode($item->image_path && count($item->image_path) > 0 ? array_map(function($img) { return asset('storage/'.$img); }, $item->image_path) : []);
+                    
+                    $images = $item->image_path;
+                    if(is_string($images)) $images = @json_decode($images, true) ?: [$images];
+                    
+                    if (!empty($images) && is_array($images)) {
+                        $imageUrl = str_starts_with($images[0], 'http') ? $images[0] : asset('storage/'.$images[0]);
+                        $imagesJson = json_encode(array_map(function($img) { 
+                            return str_starts_with($img, 'http') ? $img : asset('storage/'.$img); 
+                        }, $images));
+                    } else {
+                        $imageUrl = 'https://placehold.co/600x400/e2e8f0/475569?text=No+Image';
+                        $imagesJson = json_encode([]);
+                    }
                 @endphp
                 <div onclick="openDeal(this)" 
                     data-title="{{ $item->title }}"

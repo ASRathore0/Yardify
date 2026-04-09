@@ -23,14 +23,14 @@
 </script>
 
 <header id="global-header" class="sticky top-0 z-50 w-full bg-[#1f2937] border-b border-slate-700 shadow-md">
-    <div class="px-4 sm:px-6 lg:px-8 w-full max-w-[1400px] mx-auto flex items-center justify-between h-13 sm:h-[72px]">
+    <div class="px-4 sm:px-6 lg:px-8 w-full max-w-[1400px] mx-auto flex items-center justify-between h-14 sm:h-[72px]">
 
         <!-- Left: Logo -->
         <div class="flex items-center shrink-0">
             <!-- Brand Name Only -->
             <a href="/" class="flex justify-center outline-none">
                 <span class="text-xl sm:text-[30px] font-black text-white tracking-tight leading-none hover:text-[#38bdf8] transition-colors">
-                    Booking<span class="text-[#0ea5e9]">Yard</span>
+                    Booking<span class="text-[#046c9f]">Yard</span>
                 </span>
             </a>
         </div>

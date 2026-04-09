@@ -272,8 +272,13 @@
             <div style="display:grid;gap:12px;">
               @foreach($userItems as $item)
                 <div class="card" style="display:flex; padding:12px; gap:12px; align-items:center;">
-                  @if($item->image_path && count($item->image_path) > 0)
-                    <img src="{{ asset('storage/'.$item->image_path[0]) }}" style="width:70px; height:70px; border-radius:8px; object-fit:cover;">
+                    @php
+                      $images = $item->image_path;
+                      // if the database returned a string (e.g. single upload without JSON format or double encoded), decode it
+                      if(is_string($images)) $images = @json_decode($images, true) ?: [$images];
+                    @endphp
+                    @if(!empty($images) && count($images) > 0)
+                      <img src="{{ str_starts_with($images[0], 'http') ? $images[0] : asset('storage/'.$images[0]) }}" style="width:70px; height:70px; border-radius:8px; object-fit:cover;">
                   @else
                     <div style="width:70px; height:70px; border-radius:8px; background:#e2e8f0; display:flex; align-items:center; justify-content:center; color:#94a3b8;">
                       <i class="fa-solid fa-image"></i>
