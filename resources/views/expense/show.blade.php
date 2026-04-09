@@ -937,7 +937,7 @@
                                     
                                     // Find member details
                                     const m = groupMembers.find(gm => gm.name === name);
-                                    const avatar = m && m.avatar ? `<img src="${m.avatar}" class="w-8 h-8 rounded-full object-cover border border-slate-100">` : 
+                                    const avatar = m && m.avatar ? `<img src="${m.avatar}" class="w-8 h-8 rounded-full object-cover border border-slate-100">` : `<div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-xs border border-slate-200">${name.charAt(0).toUpperCase()}</div>`;
                                     const row = document.createElement('div');
                                     row.className = 'flex items-center justify-between p-3 rounded-xl bg-white border border-slate-100';
                                     

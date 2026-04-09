@@ -74,10 +74,14 @@ class AccountController extends Controller
             }
 
             // 2. Update expenses payer_name
-            \App\Models\Expense::where('payer_name', $oldName)->update(['payer_name' => $newName]);
+            \Illuminate\Support\Facades\DB::table('expenses')
+                ->where('payer_name', $oldName)
+                ->update(['payer_name' => $newName]);
 
             // 3. Update expense_shares member
-            \App\Models\ExpenseShare::where('member', $oldName)->update(['member' => $newName]);
+            \Illuminate\Support\Facades\DB::table('expense_shares')
+                ->where('member', $oldName)
+                ->update(['member' => $newName]);
         }
 
         return redirect()->route('account.show')->with('status', 'Profile updated successfully.');

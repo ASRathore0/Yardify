@@ -537,6 +537,7 @@ class ExpenseController extends Controller
                 'category' => $data['category'] ?? null,
                 'note' => $data['title'] ?? null,
             ]);
+            $e->touch(); // Force updated_at to update even if data didn't change
 
             $e->shares()->delete();
 
