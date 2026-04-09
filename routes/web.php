@@ -40,7 +40,14 @@ Route::get('/', function () {
         ]
     ];
 
-    return view('dashboard', compact('banners', 'categories', 'services'));
+    $testimonialsStr = \Illuminate\Support\Facades\Storage::disk('public')->get('testimonials.json');
+    $testimonials = $testimonialsStr ? json_decode($testimonialsStr, true) : [
+        [
+            "name" => "Jane Doe", "rating" => "5", "description" => "An amazing platform! I found exactly what I needed in just a few clicks.", "image" => ""
+        ]
+    ];
+
+    return view('dashboard', compact('banners', 'categories', 'services', 'testimonials'));
 })->name('home');
 
 // Auth routes
@@ -224,4 +231,5 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/banners', [\App\Http\Controllers\AdminController::class, 'updateBanners'])->name('admin.banners.update');
     Route::post('/admin/categories', [\App\Http\Controllers\AdminController::class, 'updateCategories'])->name('admin.categories.update');
     Route::post('/admin/services', [\App\Http\Controllers\AdminController::class, 'updateServices'])->name('admin.services.update');
+    Route::post('/admin/testimonials', [\App\Http\Controllers\AdminController::class, 'updateTestimonials'])->name('admin.testimonials.update');
 });

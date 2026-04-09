@@ -315,6 +315,99 @@
             </div>
         </div>
 
+        <!-- Testimonials Manager -->
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-6 sm:p-8 border-b border-slate-100 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-yellow-50 rounded-lg text-yellow-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl sm:text-2xl font-bold text-slate-900">User Testimonials</h3>
+                        <p class="text-xs sm:text-sm text-slate-500">Manage client reviews displaying on the homepage.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-4 sm:p-8 bg-slate-50/50">
+                <form method="POST" action="{{ route('admin.testimonials.update') }}" enctype="multipart/form-data">
+                    @csrf
+                    
+                    <div class="mb-6 flex justify-end">
+                        <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center py-3 px-6 rounded-xl text-yellow-700 bg-yellow-50 border border-yellow-200 hover:bg-yellow-600 hover:text-white hover:border-yellow-600 focus:ring-4 focus:ring-yellow-500/20 transition-all font-bold active:scale-[0.98]">
+                            Save Progress
+                        </button>
+                    </div>
+
+                    <div class="space-y-6 sm:space-y-8" id="testimonials-container">
+                        @php 
+                            // Add an empty testimonial at the end to allow adding a new one easily
+                            $displayTestimonials = $testimonials;
+                            $displayTestimonials[] = ['name' => '', 'rating' => '5', 'description' => '', 'image' => ''];
+                        @endphp
+                        @foreach ($displayTestimonials as $index => $testimonial)
+                            <div class="bg-white p-5 sm:p-8 rounded-3xl shadow-sm border border-slate-200 transition-all hover:border-yellow-300 group testimonial-card" id="testimonial-{{ $index }}">
+                                <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-yellow-50 text-yellow-600 flex items-center justify-center font-bold text-sm">
+                                            {{ $index + 1 }}
+                                        </div>
+                                        <h4 class="font-bold text-lg text-slate-800">{{ $index === count($displayTestimonials) - 1 ? 'New Testimonial (Fill to Add)' : 'Testimonial Card' }}</h4>
+                                    </div>
+                                    @if($index !== count($displayTestimonials) - 1)
+                                    <button type="button" onclick="clearTestimonial({{ $index }})" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">
+                                        Delete
+                                    </button>
+                                    @endif
+                                </div>
+                                
+                                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8">
+                                    <div class="lg:col-span-1 flex flex-col">
+                                        <label class="block text-sm font-semibold text-slate-700 mb-2">Display Picture</label>
+                                        <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-slate-100 overflow-hidden border-2 border-dashed border-slate-300 relative group/img flex flex-col items-center justify-center cursor-pointer mb-2 hover:border-yellow-400 hover:bg-slate-50 transition-all mx-auto lg:mx-0">
+                                            @if(!empty($testimonial['image']))
+                                                <img src="{{ Str::startsWith($testimonial['image'], 'image/') ? asset($testimonial['image']) : asset('storage/' . $testimonial['image']) }}" class="absolute inset-0 w-full h-full object-cover z-0 service-img-preview">
+                                                <svg class="w-8 h-8 text-slate-300 preview-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                            @else
+                                                <svg class="w-8 h-8 text-slate-300 preview-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                                <img src="" class="absolute inset-0 w-full h-full object-cover z-0 service-img-preview hidden">
+                                            @endif
+                                            <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover/img:opacity-100 transition-all z-10 flex items-center justify-center backdrop-blur-[2px]">
+                                                <span class="text-white text-[10px] sm:text-xs font-semibold px-2 py-1 border border-white/50 rounded-full bg-black/40">Change Pic</span>
+                                            </div>
+                                            <input type="file" name="testimonials[{{ $index }}][image_file]" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20 w-full h-full" onchange="previewImage(this)">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="lg:col-span-3 space-y-4 sm:space-y-5">
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                                            <div>
+                                                <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Client Name</label>
+                                                <input type="text" name="testimonials[{{ $index }}][name]" value="{{ $testimonial['name'] ?? '' }}" placeholder="e.g. John Doe" class="w-full rounded-xl border border-slate-200 text-sm p-3 bg-slate-50 focus:bg-white focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 transition-all shadow-sm testimonial-name">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Rating (1-5)</label>
+                                                <input type="number" name="testimonials[{{ $index }}][rating]" value="{{ $testimonial['rating'] ?? '' }}" min="1" max="5" placeholder="e.g. 5" class="w-full rounded-xl border border-slate-200 text-sm p-3 bg-slate-50 focus:bg-white focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 transition-all shadow-sm testimonial-rating">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Testimonial Description</label>
+                                            <textarea name="testimonials[{{ $index }}][description]" rows="3" placeholder="e.g. Great platform and amazing service..." class="w-full rounded-xl border border-slate-200 text-sm p-3 bg-slate-50 focus:bg-white focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 transition-all shadow-sm resize-none testimonial-desc">{{ $testimonial['description'] ?? '' }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    <div class="mt-8 pt-6 flex justify-end border-t border-slate-200">
+                        <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center py-4 px-10 rounded-xl text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-4 focus:ring-yellow-500/30 transition-all font-black text-base shadow-xl shadow-yellow-500/20 active:scale-[0.98]">
+                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Save Testimonials
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -336,6 +429,14 @@
                 }
             }
             reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function clearTestimonial(index) {
+        var el = document.getElementById('testimonial-' + index);
+        if (el) {
+            // Remove the element completely so it isn't submitted
+            el.remove();
         }
     }
 </script>

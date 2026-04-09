@@ -51,7 +51,17 @@ class AdminController extends Controller
             ]
         ];
 
-        return view("admin.dashboard", compact("stats", "banners", "categories", "services"));
+        $testimonialsStr = Storage::disk("public")->get("testimonials.json");
+        $testimonials = $testimonialsStr ? json_decode($testimonialsStr, true) : [
+            [
+                "name" => "John Doe", "rating" => "5", "description" => "Excellent service, highly recommended!", "image" => "image/user1.jpg"
+            ],
+            [
+                "name" => "Jane Smith", "rating" => "4", "description" => "Very good experience, will book again.", "image" => "image/user2.jpg"
+            ]
+        ];
+
+        return view("admin.dashboard", compact("stats", "banners", "categories", "services", "testimonials"));
     }
 
     public function updateBanners(Request $request)
@@ -130,5 +140,31 @@ class AdminController extends Controller
         }
         Storage::disk("public")->put("services.json", json_encode($services, JSON_PRETTY_PRINT));
         return back()->with("success", "Services updated successfully!");
+    }
+
+    public function updateTestimonials(Request $request)
+    {
+        if (!auth()->check() || !auth()->user()->is_admin) abort(403);
+        $oldTestimonials = json_decode(Storage::disk("public")->get("testimonials.json"), true) ?? [];
+        $testimonials = [];
+        if ($request->has("testimonials")) {
+            foreach ($request->testimonials as $index => $data) {
+                $imgPath = $oldTestimonials[$index]["image"] ?? "";
+                if ($request->hasFile("testimonials.$index.image_file")) {
+                    $val = $request->file("testimonials.$index.image_file")->store("testimonials", "public");
+                    if ($val) $imgPath = $val;
+                }
+                if (!empty($data["name"]) || !empty($imgPath)) {
+                    $testimonials[] = [
+                        "name" => $data["name"] ?? "",
+                        "rating" => $data["rating"] ?? "",
+                        "description" => $data["description"] ?? "",
+                        "image" => $imgPath,
+                    ];
+                }
+            }
+        }
+        Storage::disk("public")->put("testimonials.json", json_encode($testimonials, JSON_PRETTY_PRINT));
+        return back()->with("success", "Testimonials updated successfully!");
     }
 }

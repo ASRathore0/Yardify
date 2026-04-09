@@ -115,7 +115,34 @@
                         <p class="text-[14px] text-slate-500 mt-1.5 font-medium">All fields marked with an asterisk (<span class="text-red-500">*</span>) are required.</p>
                     </div>
 
-                    <form id="applicationForm" action="{{ route('careers.submit') }}" method="post" enctype="multipart/form-data" class="space-y-5">
+                    @if(session('success'))
+                        <div class="p-8 bg-brandLight/50 border border-brand/20 rounded-[1.5rem] flex flex-col items-center justify-center text-center">
+                            <div class="w-16 h-16 rounded-full bg-brandLight flex items-center justify-center mb-4">
+                                <i class="fa-solid fa-check-double text-3xl text-brand"></i>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-slate-900 mb-2">Thank You!</h3>
+                            <p class="text-brand font-bold">{{ session('success') }}</p>
+                            <p class="text-[13px] text-slate-600 mt-2">Our hiring team will review your application and be in touch soon.</p>
+                            <a href="{{ url('/') }}" class="mt-6 inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-brand text-white font-bold text-sm hover:bg-brandHover transition">
+                                <i class="fa-solid fa-house"></i> Return Home
+                            </a>
+                        </div>
+                    @else
+                        @if($errors->any())
+                            <div class="mb-6 p-4 bg-red-50 border border-red-100 text-red-800 rounded-xl text-[13px] font-bold">
+                                <div class="flex items-center mb-2">
+                                    <i class="fa-solid fa-circle-exclamation mr-1 text-red-500"></i> 
+                                    <span>Please fix the following errors:</span>
+                                </div>
+                                <ul class="list-disc pl-5 mt-1 font-medium">
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+                        <form id="applicationForm" action="{{ route('careers.submit') }}" method="post" enctype="multipart/form-data" class="space-y-5">
                         @csrf
 
                         <!-- Personal Info -->
@@ -202,6 +229,7 @@
                         </div>
 
                     </form>
+                    @endif
                     
                     <p id="responseMessage" class="hidden text-[13px] font-bold text-center mt-4"></p>
                     <div id="confirmationMessage" class="hidden mt-4 p-4 bg-emerald-50 border border-emerald-100 text-emerald-800 rounded-xl text-[13px] font-bold text-center">

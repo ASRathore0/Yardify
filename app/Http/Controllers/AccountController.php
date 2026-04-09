@@ -52,8 +52,33 @@ class AccountController extends Controller
             unset($validated['password']);
         }
 
+        $oldName = $user->name;
+        $newName = $validated['name'] ?? $oldName;
+
         $user->fill($validated);
         $user->save();
+
+        // Update all associated expense records if name has changed
+        if ($oldName !== $newName) {
+            // 1. Update expense_groups members
+            $groups = \App\Models\ExpenseGroup::whereJsonContains('members', $oldName)->get();
+            foreach ($groups as $g) {
+                $members = $g->members ?? [];
+                foreach ($members as &$m) {
+                    if ($m === $oldName) {
+                        $m = $newName;
+                    }
+                }
+                $g->members = $members;
+                $g->save();
+            }
+
+            // 2. Update expenses payer_name
+            \App\Models\Expense::where('payer_name', $oldName)->update(['payer_name' => $newName]);
+
+            // 3. Update expense_shares member
+            \App\Models\ExpenseShare::where('member', $oldName)->update(['member' => $newName]);
+        }
 
         return redirect()->route('account.show')->with('status', 'Profile updated successfully.');
     }

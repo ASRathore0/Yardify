@@ -56,7 +56,7 @@ class ExpenseController extends Controller
                         $user = User::where('name', $m)->orWhere('email', $m)->first();
                         return [
                             'name' => $user ? $user->name : $m,
-                            'avatar' => $user ? $user->avatar_path : null,
+                            'avatar' => $user ? $user->avatar_url : null,
                             'id' => $user ? $user->id : null,
                             'initial' => substr($user ? $user->name : $m, 0, 1),
                         ];
@@ -142,7 +142,7 @@ class ExpenseController extends Controller
                 $user = User::where('name', $m)->orWhere('email', $m)->first();
                 return [
                     'name' => $user ? $user->name : $m,
-                    'avatar' => $user ? $user->avatar_path : null,
+                    'avatar' => $user ? $user->avatar_url : null,
                     'initial' => substr($user ? $user->name : $m, 0, 1),
                 ];
             })->toArray(),

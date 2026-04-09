@@ -172,14 +172,14 @@
     <!-- Product Details Modal Overlay -->
     <div id="dealModal" style="z-index: 49;" class="fixed inset-0 pt-[52px] sm:pt-[72px] bg-slate-900/80 backdrop-blur-sm flex items-end sm:items-center justify-center sm:p-4 hidden transition-opacity duration-300">
         <!-- Modal Content Container -->
-        <div class="bg-white w-full max-w-2xl sm:rounded-[2rem] rounded-t-[2rem] rounded-b-none sm:rounded-b-[2rem] overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[95vh] relative shadow-2xl modal-enter translate-y-0 transition-transform duration-300">
+        <div class="bg-white w-full max-w-2xl sm:rounded-[2rem] rounded-t-[2rem] rounded-b-none sm:rounded-b-[2rem] overflow-hidden flex flex-col h-[85vh] sm:h-auto sm:max-h-[95vh] relative shadow-2xl modal-enter translate-y-0 transition-transform duration-300">
             
             <!-- Mobile Drag Handle Indicator (Visual only) -->
             <div class="w-full flex justify-center py-3 sm:hidden absolute top-0 left-0 z-30 pointer-events-none">
                 <div class="w-12 h-1.5 bg-white/50 rounded-full"></div>
             </div>
 
-            <!-- Close Button -->
+            <!-- Close Button -->   
             <button onclick="closeDeal()" class="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 w-9 h-9 sm:w-10 sm:h-10 bg-black/30 hover:bg-black/50 backdrop-blur-md text-white rounded-full flex items-center justify-center transition-colors shadow-lg border border-white/10">
                 <i class="fas fa-times text-base sm:text-lg"></i>
             </button>
@@ -207,19 +207,35 @@
                     </div>
 
                     <h2 id="mTitle" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2 leading-tight">Product Title</h2>
-                    <div class="text-2xl sm:text-3xl font-black text-[#046c9f] mb-5 sm:mb-6" id="mPrice">₹0</div>
+                    <div class="text-2xl sm:text-3xl font-black text-[#046c9f] mb-3" id="mPrice">₹0</div>
+
+                    <!-- Modern Location Badge -->
+                    <div class="mb-5 sm:mb-6">
+                        <a id="mLoc" href="#" target="_blank" class="group flex items-center p-3 sm:p-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 rounded-xl sm:rounded-2xl transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.01)] hover:shadow-sm gap-3">
+                            <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-100 text-[#046c9f] flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <i class="fas fa-map-marker-alt text-sm sm:text-base"></i>
+                            </div>
+                            <div class="flex-1 min-w-0 pr-2">
+                                <span class="block text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Location</span>
+                                <span id="mLocText" class="block text-sm sm:text-[15px] font-bold text-slate-700 leading-tight">Location Text Here</span>
+                            </div>
+                            <div class="flex-shrink-0 text-slate-300 group-hover:text-[#046c9f] transition-colors">
+                                <i class="fas fa-external-link-alt text-xs sm:text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
 
                     <h4 class="text-[11px] sm:text-sm font-bold uppercase tracking-widest text-slate-400 mb-2.5">Description</h4>
-                    <p id="mDesc" class="text-slate-600 text-sm sm:text-[15px] leading-relaxed mb-6 sm:mb-8 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-100">
+                    <p id="mDesc" class="text-slate-600 text-sm sm:text-[15px] leading-relaxed mb-6 sm:mb-8 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-100 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]">
                         Detailed description goes here.
                     </p>
 
                     <h4 class="text-[11px] sm:text-sm font-bold uppercase tracking-widest text-slate-400 mb-2.5">Seller Details</h4>
-                    <div class="flex items-center gap-3 sm:gap-4 p-3 sm:p-5 border border-slate-200 rounded-2xl bg-white shadow-sm">
+                    <div class="flex items-center gap-3 sm:gap-4 p-3 sm:p-5 border border-slate-200 rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow">
                         <div id="mAvatar" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center text-base sm:text-lg font-bold text-slate-700 shadow-sm border border-slate-100">A</div>
                         <div class="flex-1 min-w-0">
                             <p id="mSeller" class="text-sm sm:text-base font-bold text-slate-800 truncate">Seller Name</p>
-                            <p id="mLoc" class="text-xs sm:text-[13px] text-slate-500 font-medium mt-0.5 truncate"><i class="fas fa-map-marker-alt mr-1 text-slate-400"></i> Location</p>
+                            <p class="text-xs text-slate-500 font-medium mt-1 uppercase tracking-wide">Verified Member</p>
                         </div>
                         <div class="text-right flex flex-col items-end shrink-0">
                             <span class="bg-green-50 text-green-700 px-2 py-1 rounded-md text-[9px] sm:text-[10px] font-bold uppercase tracking-wide flex items-center mb-1 border border-green-100">
@@ -370,7 +386,12 @@
             document.getElementById('mCondition').textContent = condition;
             document.getElementById('mDesc').textContent = desc;
             document.getElementById('mSeller').textContent = seller;
-            document.getElementById('mLoc').innerHTML = '<i class="fas fa-map-marker-alt mr-1 text-slate-400"></i> ' + loc;
+            
+            const locTextEl = document.getElementById('mLocText');
+            if (locTextEl) locTextEl.textContent = loc;
+            
+            const locEl = document.getElementById('mLoc');
+            if (locEl) locEl.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(loc);
             
             const waBtn = document.getElementById('mWhatsAppBtn');
             const callBtn = document.getElementById('mCallBtn');

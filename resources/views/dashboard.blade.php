@@ -653,15 +653,15 @@
 
 <!-- Hero Actions -->
 <div style="display:flex; justify-content: space-between; padding: 0 20px 20px; gap: 12px;">
-    <button onclick="window.location.href='{{ route('explore') }}'" style="flex:1; background: #e0f7fa; color: #00838f; border:none; padding:16px 10px; border-radius:16px; font-weight:800; display:flex; flex-direction:column; align-items:center; gap:10px; cursor:pointer; box-shadow:0 4px 10px rgba(0,131,143,0.1); transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+    <button onclick="window.location.href='{{ route('explore') }}'" style="flex:1; background: #e8f4fa; color: #046c9f; border:none; padding:16px 10px; border-radius:16px; font-weight:800; display:flex; flex-direction:column; align-items:center; gap:10px; cursor:pointer; box-shadow:0 4px 10px rgba(0,131,143,0.1); transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
         <div style="background:#fff; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.05);"><i class="fas fa-tools" style="font-size:1.3rem;"></i></div>
         <span style="font-size:0.8rem; line-height:1.2;">Book<br>Services</span>
     </button>
-    <button onclick="window.location.href='{{ route('one_x_one') }}'" style="flex:1; background: #e8f5e9; color: #2e7d32; border:none; padding:16px 10px; border-radius:16px; font-weight:800; display:flex; flex-direction:column; align-items:center; gap:10px; cursor:pointer; box-shadow:0 4px 10px rgba(46,125,50,0.1); transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+    <button onclick="window.location.href='{{ route('one_x_one') }}'" style="flex:1; background: #e8f4fa; color: #046c9f; border:none; padding:16px 10px; border-radius:16px; font-weight:800; display:flex; flex-direction:column; align-items:center; gap:10px; cursor:pointer; box-shadow:0 4px 10px rgba(46,125,50,0.1); transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
         <div style="background:#fff; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.05);"><i class="fas fa-shopping-bag" style="font-size:1.3rem;"></i></div>
         <span style="font-size:0.8rem; line-height:1.2;">Buy &<br>Sell</span>
     </button>
-    <button onclick="window.location.href='{{ route('one_x_one') }}?category=rent'" style="flex:1; background: #fff3e0; color: #e65100; border:none; padding:16px 10px; border-radius:16px; font-weight:800; display:flex; flex-direction:column; align-items:center; gap:10px; cursor:pointer; box-shadow:0 4px 10px rgba(230,81,0,0.1); transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+    <button onclick="window.location.href='{{ route('one_x_one') }}?category=rent'" style="flex:1; background: #e8f4fa; color: #046c9f; border:none; padding:16px 10px; border-radius:16px; font-weight:800; display:flex; flex-direction:column; align-items:center; gap:10px; cursor:pointer; box-shadow:0 4px 10px rgba(230,81,0,0.1); transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
         <div style="background:#fff; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.05);"><i class="fas fa-key" style="font-size:1.3rem;"></i></div>
         <span style="font-size:0.8rem; line-height:1.2;">Rent<br>Things</span>
     </button>
@@ -675,37 +675,37 @@
 <div class="round-categories">
   <!-- Row 1 -->
   <button class="round-category-item" onclick="window.location.href='{{ route('explore') }}?category=homes'">
-    <div class="round-category-icon" style="background-color: #e8f0fe; color: #1a73e8;"><i class="fas fa-home"></i></div>
+    <div class="round-category-icon" style="background-color: #e8f4fa; color: #046c9f;"><i class="fas fa-home"></i></div>
     <div class="round-category-text">Home Ser...</div>
   </button>
   <button class="round-category-item" onclick="window.location.href='{{ route('explore') }}?category=cabs'">
-    <div class="round-category-icon" style="background-color: #e6f4ea; color: #34a853;"><i class="fas fa-car"></i></div>
+    <div class="round-category-icon" style="background-color: #e8f4fa; color: #046c9f;"><i class="fas fa-car"></i></div>
     <div class="round-category-text">Cabs</div>
   </button>
   <button class="round-category-item" onclick="window.location.href='{{ route('explore') }}?category=event'">
-    <div class="round-category-icon" style="background-color: #f3e8fc; color: #9c27b0;"><i class="far fa-calendar-alt"></i></div>
+    <div class="round-category-icon" style="background-color: #e8f4fa; color: #046c9f;"><i class="far fa-calendar-alt"></i></div>
     <div class="round-category-text">Events</div>
   </button>
   <button class="round-category-item" onclick="window.location.href='{{ route('explore') }}?category=Rental'">
-    <div class="round-category-icon" style="background-color: #fef0e6; color: #ff9800;"><i class="fas fa-bed"></i></div>
+    <div class="round-category-icon" style="background-color: #e8f4fa; color: #046c9f;"><i class="fas fa-bed"></i></div>
     <div class="round-category-text">Hotels</div>
   </button>
 
   <!-- Row 2 -->
   <button class="round-category-item" onclick="window.location.href='{{ route('explore') }}?category=Rental'">
-    <div class="round-category-icon" style="background-color: #fce8e6; color: #e53935;"><i class="fas fa-building"></i></div>
+    <div class="round-category-icon" style="background-color: #e8f4fa; color: #046c9f;"><i class="fas fa-building"></i></div>
     <div class="round-category-text">Rentals</div>
   </button>
   <button class="round-category-item" onclick="window.location.href='{{ route('explore') }}?category=Working'">
-    <div class="round-category-icon" style="background-color: #e0f7fa; color: #00bcd4;"><i class="fas fa-user-cog"></i></div>
+    <div class="round-category-icon" style="background-color: #e8f4fa; color: #046c9f;"><i class="fas fa-user-cog"></i></div>
     <div class="round-category-text">Professio...</div>
   </button>
   <button class="round-category-item" onclick="window.location.href='{{ route('explore') }}?category=Working'">
-    <div class="round-category-icon" style="background-color: #fce4ec; color: #e91e63;"><i class="fas fa-spa"></i></div>
+    <div class="round-category-icon" style="background-color: #e8f4fa; color: #046c9f;"><i class="fas fa-spa"></i></div>
     <div class="round-category-text">Beauty</div>
   </button>
   <button class="round-category-item" onclick="window.location.href='{{ route('explore') }}?category=event'">
-    <div class="round-category-icon" style="background-color: #fff3e0; color: #ff5722;"><i class="fas fa-utensils"></i></div>
+    <div class="round-category-icon" style="background-color: #e8f4fa; color: #046c9f;"><i class="fas fa-utensils"></i></div>
     <div class="round-category-text">Catering</div>
   </button>
 </div>
@@ -777,7 +777,7 @@
   @endif
 </div>
   
-<div class="section-title" style="margin-top: 30px;">
+<div class="section-title" style="margin-top: 20px; justify-content: center; text-align: center;">
   <span>Why BookingYard?</span>
 </div>
 
@@ -814,36 +814,40 @@
   </div>
 </div>
 
-<div class="section-title">
+<div class="section-title " style="margin-top: 20px; justify-content: center; text-align: center;">
   <span>What Our Users Say</span>
 </div>
 
 <section class="modern-testimonials">
-  <div class="modern-testimonial-card">
-    <div class="modern-testimonial-header">
-      <div class="modern-avatar">HC</div>
-      <div class="modern-user-info">
-        <h4>Happy Customer</h4>
-        <div class="modern-stars">
-          <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+  @if(isset($testimonials) && count($testimonials) > 0)
+    @foreach($testimonials as $testimonial)
+    <div class="modern-testimonial-card">
+      <div class="modern-testimonial-header">
+        @if(!empty($testimonial['image']))
+          <img src="{{ Str::startsWith($testimonial['image'], 'image/') ? asset($testimonial['image']) : asset('storage/' . $testimonial['image']) }}" class="modern-avatar" style="object-fit: cover;">
+        @else
+          <div class="modern-avatar">{{ substr($testimonial['name'] ?? 'U', 0, 2) }}</div>
+        @endif
+        <div class="modern-user-info">
+          <h4>{{ $testimonial['name'] ?? 'User' }}</h4>
+          <div class="modern-stars">
+            @php $rating = (int)($testimonial['rating'] ?? 5); @endphp
+            @for($i=1; $i<=5; $i++)
+              @if($i <= $rating)
+                <i class="fas fa-star"></i>
+              @else
+                <i class="far fa-star"></i>
+              @endif
+            @endfor
+          </div>
         </div>
       </div>
+      <p class="modern-quote">"{{ $testimonial['description'] ?? '' }}"</p>
     </div>
-    <p class="modern-quote">"An amazing platform! I found exactly what I needed in just a few clicks. The vendor was professional and on time."</p>
-  </div>
-  
-  <div class="modern-testimonial-card">
-    <div class="modern-testimonial-header">
-      <div class="modern-avatar">RS</div>
-      <div class="modern-user-info">
-        <h4>Rahul Sharma</h4>
-        <div class="modern-stars">
-          <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-        </div>
-      </div>
-    </div>
-    <p class="modern-quote">"Loved the direct dealing feature. No hidden charges and complete transparency. Highly recommend BookingYard."</p>
-  </div>
+    @endforeach
+  @else
+    <p style="padding: 20px; color: #64748b; font-size: 0.9rem;">No testimonials found.</p>
+  @endif
 </section>
 
   

@@ -178,7 +178,7 @@
                     <div class="flex -space-x-2">
                         @foreach(array_slice($g['members'], 0, 3) as $member)
                             @if(!empty($member['avatar']))
-                                <img src="{{ asset('storage/' . $member['avatar']) }}" alt="{{ $member['name'] }}" class="w-8 h-8 rounded-full border-2 border-white object-cover" title="{{ $member['name'] }}">
+                                <img src="{{ $member['avatar'] }}" alt="{{ $member['name'] }}" class="w-8 h-8 rounded-full border-2 border-white object-cover" title="{{ $member['name'] }}">
                             @else
                                 <div class="w-8 h-8 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600" title="{{ $member['name'] }}">
                                     {{ $member['initial'] }}

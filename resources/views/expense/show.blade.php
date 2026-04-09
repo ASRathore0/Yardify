@@ -16,7 +16,7 @@
                 <div class="flex -space-x-2">
                     @foreach($group['members'] as $m)
                         @if(!empty($m['avatar']))
-                             <img src="{{ asset('storage/' . $m['avatar']) }}" alt="{{ $m['name'] }}" class="w-8 h-8 rounded-full border-2 border-white object-cover" title="{{ $m['name'] }}">
+                             <img src="{{ $m['avatar'] }}" alt="{{ $m['name'] }}" class="w-8 h-8 rounded-full border-2 border-white object-cover" title="{{ $m['name'] }}">
                         @else
                              <div class="w-8 h-8 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600" title="{{ $m['name'] }}">
                                 {{ $m['initial'] }}
@@ -69,7 +69,7 @@
                         <div class="flex items-center justify-between p-4 rounded-2xl border {{ $bal >= 0 ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100' }}">
                             <div class="flex items-center gap-3">
                                 @if(!empty($m['avatar']))
-                                     <img src="{{ asset('storage/' . $m['avatar']) }}" alt="{{ $m['name'] }}" class="w-10 h-10 rounded-full bg-white border border-slate-100 object-cover shadow-sm">
+                                     <img src="{{ $m['avatar'] }}" alt="{{ $m['name'] }}" class="w-10 h-10 rounded-full bg-white border border-slate-100 object-cover shadow-sm">
                                 @else
                                      <div class="w-10 h-10 rounded-full bg-white border border-slate-100 text-slate-500 flex items-center justify-center font-bold text-sm shadow-sm">
                                         {{ $m['initial'] }}
@@ -288,11 +288,11 @@
                                 <input type="hidden" name="is_custom_split" value="1">
                                 <div class="flex flex-wrap gap-2" id="member-chips">
                                     @foreach($group['members'] as $index => $m)
-                                        <button type="button" 
+                                        <button type="button"
                                             onclick="toggleExpenseMember(this, '{{ $index }}')"
                                             class="px-3 py-1.5 rounded-xl text-[13px] font-bold border transition-all select-none bg-[#e0f2fe] text-[#046c9f] border-[#046c9f] shadow-sm flex items-center gap-2 hover:brightness-95 active:scale-95">
                                             @if(!empty($m['avatar']))
-                                                <img src="{{ asset('storage/' . $m['avatar']) }}" class="w-5 h-5 rounded-full object-cover">
+                                                <img src="{{ $m['avatar'] }}" class="w-5 h-5 rounded-full object-cover">
                                             @endif
                                             <span>{{ $m['name'] }}</span>
                                             <span class="text-[10px] opacity-60">✕</span>
@@ -937,9 +937,7 @@
                                     
                                     // Find member details
                                     const m = groupMembers.find(gm => gm.name === name);
-                                    const avatar = m && m.avatar ? `<img src="/storage/${m.avatar}" class="w-8 h-8 rounded-full object-cover border border-slate-100">` : 
-                                        `<div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500">${name.charAt(0).toUpperCase()}</div>`;
-
+                                    const avatar = m && m.avatar ? `<img src="${m.avatar}" class="w-8 h-8 rounded-full object-cover border border-slate-100">` : 
                                     const row = document.createElement('div');
                                     row.className = 'flex items-center justify-between p-3 rounded-xl bg-white border border-slate-100';
                                     
